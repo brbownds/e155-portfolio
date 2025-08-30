@@ -5,8 +5,8 @@ about:
     template: jolla
 ---
 
-Hello! My name is Broderick Bownds and I am a junior engineering major at Harvey Mudd College
-with a focus of Electrical and Computer Engineering. I am passionate abotu designing efficient 
+Hello! My name is Broderick Bownds and I am a junior engineering major with a focus of Electrical 
+and Computer Engineering at Harvey Mudd College. I am passionate abotu designing efficient 
 systems at the intersection of hardware and signal processing. My experience spans FPGA development, 
 system-level design, CAD-based prototyping. 
 
