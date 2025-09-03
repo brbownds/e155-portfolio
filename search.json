@@ -1,16 +1,65 @@
 [
   {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
+    "objectID": "Lab_1.html",
+    "href": "Lab_1.html",
+    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
     "section": "",
-    "text": "About this site"
+    "text": "In this lab, a design was implemented on the FPGA to demonstrate the functionality of the on-board high-speed oscillator by blinking one of the on-board LEDs. The high-speed oscillator was configured at a frequency of 48 MHz and divided down using a counter to achieve a blinking frequency of 2.4 Hz."
+  },
+  {
+    "objectID": "Lab_1.html#introduction",
+    "href": "Lab_1.html#introduction",
+    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "section": "",
+    "text": "In this lab, a design was implemented on the FPGA to demonstrate the functionality of the on-board high-speed oscillator by blinking one of the on-board LEDs. The high-speed oscillator was configured at a frequency of 48 MHz and divided down using a counter to achieve a blinking frequency of 2.4 Hz."
+  },
+  {
+    "objectID": "Lab_1.html#design-and-testing-methodology",
+    "href": "Lab_1.html#design-and-testing-methodology",
+    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "section": "Design and Testing Methodology",
+    "text": "Design and Testing Methodology\nThe on-board high-speed oscillator (HSOSC) from the iCE40 UltraPlus primitive library was used to generate a clock signal at 24 MHz. Then, a counter was used to divide the high-frequency clock signal down so that the blinking frequency could be easily visualized using one of the on-board LEDs.\nThe design was developed using a simple clock divider module which drives the external LED."
+  },
+  {
+    "objectID": "Lab_1.html#technical-documentation",
+    "href": "Lab_1.html#technical-documentation",
+    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "section": "Technical Documentation",
+    "text": "Technical Documentation\nThe source code for the project can be found in the associated GitHub repository.\n\nBlock Diagram\nFigure 1: Block diagram of the Verilog design.\nThe block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module top includes two submodules: the high-speed oscillator block (HSOSC) and the clock divider module (clk_divider).\n\n\nSchematic\nFigure 2: Schematic of the physical circuit.\nFigure 2 shows the physical layout of the design. An internal 100 kΩ pull-up resistor was used to ensure the active-low reset pin was not floating. The output LED was connected using a 1 kΩ current-limiting resistor to ensure the output current (~2.6 mA) did not exceed the maximum output current of the FPGA I/O pins."
+  },
+  {
+    "objectID": "Lab_1.html#results-and-discussion",
+    "href": "Lab_1.html#results-and-discussion",
+    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "section": "Results and Discussion",
+    "text": "Results and Discussion\nThe design met all intended design objectives.\n\nTestbench Simulation\nFigure 3: Screenshot of a QuestaSim simulation demonstrating the blinking output signal.\nNote that the timescale for the clock divider was modified to divide by 4. If a more precise output frequency was desired, a more sophisticated counter could be developed. The current design only allows for the clock to be divided by powers of two."
+  },
+  {
+    "objectID": "Lab_1.html#conclusion",
+    "href": "Lab_1.html#conclusion",
+    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "section": "Conclusion",
+    "text": "Conclusion\nThe design successfully blinked an external LED using the on-board high-speed oscillator. I spent a total of two hours working on this lab."
+  },
+  {
+    "objectID": "Lab_1.html#ai-prototype-summary",
+    "href": "Lab_1.html#ai-prototype-summary",
+    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "section": "AI Prototype Summary",
+    "text": "AI Prototype Summary\nThis section includes generated code, easy-to-read chat transcripts, and a reflection on how well the AI-assisted workflow performed."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "E155 - Broderick Bownds",
+    "title": "Portfolio",
     "section": "",
-    "text": "Hello! My name is Broderick Bownds and I am a junior engineering major with a focus of Electrical and Computer Engineering at Harvey Mudd College. I am passionate abotu designing efficient systems at the intersection of hardware and signal processing. My experience spans FPGA development, system-level design, CAD-based prototyping.\nBeyond the lab, I am committed to inclusive innovation, such as redesigning neuroimaging caps for textured hair, mentoring youth in 3D design and coding through Project Think, being involved in NSBE, and leading through the Annenberg Leadership Forum."
+    "text": "Hello! My name is Broderick Bownds and I am a junior engineering major with a focus of Electrical and Computer Engineering at Harvey Mudd College. I am passionate abotu designing efficient systems at the intersection of hardware and signal processing. My experience spans FPGA development, system-level design, CAD-based prototyping. Beyond the lab, I am committed to inclusive innovation, such as redesigning neuroimaging caps for textured hair, mentoring youth in 3D design and coding through Project Think, being involved in NSBE, and leading through the Annenberg Leadership Forum."
+  },
+  {
+    "objectID": "resources.html",
+    "href": "resources.html",
+    "title": "E155 Resources",
+    "section": "",
+    "text": "link to the course website here"
   }
 ]

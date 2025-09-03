@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://brbownds.github.io/e155-portfolio/about.html</loc>
-    <lastmod>2025-08-30T05:11:26.368Z</lastmod>
+    <loc>https://brbownds.github.io/e155-portfolio/blog.html</loc>
+    <lastmod>2025-09-03T08:38:01.322Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brbownds.github.io/e155-portfolio/Lab_1.html</loc>
+    <lastmod>2025-09-03T08:53:09.566Z</lastmod>
   </url>
   <url>
     <loc>https://brbownds.github.io/e155-portfolio/index.html</loc>
-    <lastmod>2025-08-30T05:34:35.470Z</lastmod>
+    <lastmod>2025-09-03T08:08:36.831Z</lastmod>
+  </url>
+  <url>
+    <loc>https://brbownds.github.io/e155-portfolio/resources.html</loc>
+    <lastmod>2025-09-03T08:28:57.020Z</lastmod>
   </url>
 </urlset>
