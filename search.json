@@ -2,58 +2,58 @@
   {
     "objectID": "Lab_1.html",
     "href": "Lab_1.html",
-    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
     "section": "",
     "text": "In this lab, a design was implemented on the FPGA to demonstrate the functionality of the on-board high-speed oscillator by blinking one of the on-board LEDs. The high-speed oscillator was configured at a frequency of 48 MHz and divided down using a counter to achieve a blinking frequency of 2.4 Hz."
   },
   {
     "objectID": "Lab_1.html#introduction",
     "href": "Lab_1.html#introduction",
-    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
     "section": "",
     "text": "In this lab, a design was implemented on the FPGA to demonstrate the functionality of the on-board high-speed oscillator by blinking one of the on-board LEDs. The high-speed oscillator was configured at a frequency of 48 MHz and divided down using a counter to achieve a blinking frequency of 2.4 Hz."
   },
   {
     "objectID": "Lab_1.html#design-and-testing-methodology",
     "href": "Lab_1.html#design-and-testing-methodology",
-    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
     "section": "Design and Testing Methodology",
-    "text": "Design and Testing Methodology\nWe assembled the E155 development board by soldering SMT and THT components, followed by verifying voltage regulators (3.3V and 5V). Testing involved loading a pre-written FPGA design to blink LEDs and then programming the MCU to read and echo signals. Once verified, we wrote our own Verilog modules to interface DIP switches with LEDs and a 7-segment display, synthesizing the design in Lattice Radiant and simulating with ModelSim. Git was used to track project files.\nThe on-board high-speed oscillator (HSOSC) from the iCE40 UltraPlus primitive library was used to generate a clock signal at 24 MHz. Then, a counter was used to divide the high-frequency clock signal down so that the blinking frequency could be easily visualized using one of the on-board LEDs."
+    "text": "Design and Testing Methodology\nWe assembled the E155 development board by soldering SMT and THT components, followed by verifying voltage regulators (3.3V and 5V). Testing involved loading a pre-written FPGA design to blink LEDs and then programming the MCU to read and echo signals. Once verified, we wrote our own Verilog modules to interface DIP switches with LEDs and a 7-segment display, synthesizing the design in Lattice Radiant and simulating with Questa ModelSim. Git was used to track project source code files.\nThe on-board high-speed oscillator (HSOSC) from the iCE40 UltraPlus primitive library was used to generate a clock signal at 24 MHz. Then, a counter was used to divide the high-frequency clock signal down so that the blinking frequency could be easily visualized using one of the on-board LEDs."
   },
   {
     "objectID": "Lab_1.html#technical-documentation",
     "href": "Lab_1.html#technical-documentation",
-    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
     "section": "Technical Documentation",
-    "text": "Technical Documentation\nThe source code for the project can be found in the associated GitHub repository.\n\nBlock Diagram\nFigure 1: Block diagram of the Verilog design.\nThe block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module lab1_bb includes two submodules: the high-speed oscillator block (HSOSC) and the 7 segement display sevenseg_dis.\n\n\nSchematic\nFigure 2: Schematic of the physical circuit.\nFigure 2 shows the physical layout of the design. An internal 100 kΩ pull-up resistor was used to ensure the active-low reset pin was not floating. The output LED was connected using a 1 kΩ current-limiting resistor to ensure the output current (~2.6 mA) did not exceed the maximum output current of the FPGA I/O pins."
+    "text": "Technical Documentation\nThe source code for the project can be found in the associated GitHub repository.\n\nBlock Diagram\nFigure 1: Block diagram of the Verilog design.\nThe block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module lab1_bb includes two submodules: the high-speed oscillator block (HSOSC) and the 7 segement display sevenseg_dis.\n\n\nSchematic\nFigure 2: Schematic of the physical circuit.\nFigure 2 shows the physical layout of the design. An internal 1.5 kΩ pull-up resistor was used to ensure the active-low reset pin was not floating. The current running through the diode of the seven segment display (~1 mA) was divided by the Vcc subtracted by the forward voltage of a red LED. The output LED was connected using a 1 kΩ current-limiting resistor to ensure the output current (~2.6 mA) did not exceed the maximum output current of the FPGA I/O pins."
   },
   {
     "objectID": "Lab_1.html#results-and-discussion",
     "href": "Lab_1.html#results-and-discussion",
-    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
     "section": "Results and Discussion",
-    "text": "Results and Discussion\nThe design met all intended design objectives.\n\nTestbench Simulation\nFigure 3: Screenshot of a QuestaSim simulation demonstrating the blinking output signal.\nNote that the timescale for the clock divider was modified to divide by 4. If a more precise output frequency was desired, a more sophisticated counter could be developed. The current design only allows for the clock to be divided by powers of two."
+    "text": "Results and Discussion\nThe design met all intended design objectives through our testbench simulations,\n\nTestbench Simulation\n Figure 3: Screenshot of a QuestaSim simulation demonstrating the blinking output signal.\nNote that the timescale for the clock divider was modified to divide by 4. If a more precise output frequency was desired, a more sophisticated counter could be developed. The current design only allows for the clock to be divided by powers of two. (MIGHT GET RID OF)\n\n\nOscilliscope of Blinking LED\n Figure 4: Screenshot of a oscilliscope waveform validating the exact frequency of 2.41 Hz."
   },
   {
     "objectID": "Lab_1.html#conclusion",
     "href": "Lab_1.html#conclusion",
-    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
     "section": "Conclusion",
-    "text": "Conclusion\nThe design successfully blinked an external LED using the on-board high-speed oscillator. I spent a total of two hours working on this lab."
+    "text": "Conclusion\nThe design successfully blinked an external LED using the on-board high-speed oscillator. I spent a total of 10+ hours working on this lab."
   },
   {
     "objectID": "Lab_1.html#ai-prototype-summary",
     "href": "Lab_1.html#ai-prototype-summary",
-    "title": "FPGA Lab Report: High-Speed Oscillator LED Blinker",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
     "section": "AI Prototype Summary",
-    "text": "AI Prototype Summary\nWhen conducting the AI prototype summary, the LLM I utilized was Microsoft’s Copilot. I prompted it to “Write SystemVerilog HDL to leverage the internal high-speed oscillator in the Lattice UP5K FPGA and blink an LED at 2 Hz, using idiomatic SystemVerilog. Copilot produced a short module that instantiated the UP5K high-speed oscillator, divided the clock with a counter, and drove an LED. The style was pretty clean—logic types, always_ff @(posedge clk) for the counter. However, when I pasted it into a fresh Lattice Radiant project and hit Synthesize, Radiant failed immediately with a syntax error: Copilot had dropped a closing parenthesis in the oscillator instantiation and missed a semicolon at the end of a localparam line. After I copied Radiant’s error text back into Copilot, it regenerated the block with the missing ) and ; added. With those fixed, the synthesis was completed.\nQuality-wise, I’d rate Copilot’s output as “good scaffolding, needs verification.” It nailed the overall structure and used modern SystemVerilog constructs I like adopting. It also wrote a clear reset path for the counter. None of those were brand-new to me, but it was helpful to see them composed neatly in a minimal example. If I did this again, I’d tighten my workflow in three ways:\n\nTreat the LLM as a code generator, not an authority. I’ll immediately run the output, then feed exact tool errors back to the model for focused corrections.\nAsk the LLM to “emit compile-ready, tool-specific primitives” and include a checklist in the prompt. That nudge seems to reduce trivial mistakes.\nAdd a quick unit sanity check in the prompt: “Assume ~48 MHz HFOSC; show the counter width/math to reach ~2 Hz.” That forces the model to spell out the divide math, which is convenient to verify before synthesis."
+    "text": "AI Prototype Summary\nWhen conducting the AI prototype summary, the LLM I utilized was Microsoft’s Copilot. I prompted it to “Write SystemVerilog HDL to leverage the internal high-speed oscillator in the Lattice UP5K FPGA and blink an LED at 2 Hz, using idiomatic SystemVerilog. Copilot produced a short module that instantiated the UP5K high-speed oscillator, divided the clock with a counter, and drove an LED. The style was pretty clean for the counter. However, when I pasted it into a fresh Lattice Radiant project and hit Synthesize, Radiant failed immediately with a syntax error: Copilot had dropped a closing parenthesis in the oscillator instantiation and missed a semicolon at the end of a localparam line. After I copied Radiant’s error text back into Copilot, it regenerated the block with the missing ) and ; added. With those fixed, the synthesis was completed.\nI would rate Copilot’s output as “good scaffolding, needs verification.” It nailed the overall structure and used modern SystemVerilog constructs I like adopting. It also wrote a clear reset path for the counter. None of those were brand-new to me, but it was helpful to see them composed neatly in a minimal example. If I did this again, I would tighten my workflow in three ways:\n\nTreat the LLM as a code generator, not an authority. I’ll immediately run the output, then feed exact tool errors back to the model for focused corrections.\nAsk the LLM to “emit compile ready, tool-specific primitives” and include a checklist in the prompt. That nudge seems to reduce trivial mistakes.\nAdd a quick unit sanity check in the prompt: “Assume ~48 MHz HFOSC; show the counter width/math to reach ~2 Hz.” That forces the model to spell out the divide math, which is convenient to verify before synthesis."
   },
   {
     "objectID": "index.html",
     "href": "index.html",
     "title": "Portfolio",
     "section": "",
-    "text": "Hello! My name is Broderick Bownds and I am a junior engineering major with a focus of Electrical and Computer Engineering at Harvey Mudd College. I am passionate abotu designing efficient systems at the intersection of hardware and signal processing. My experience spans FPGA development, system-level design, CAD-based prototyping. Beyond the lab, I am committed to inclusive innovation, such as redesigning neuroimaging caps for textured hair, mentoring youth in 3D design and coding through Project Think, being involved in NSBE, and leading through the Annenberg Leadership Forum."
+    "text": "Hello! My name is Broderick Bownds and I am a junior engineering major with a focus of Electrical and Computer Engineering at Harvey Mudd College. I am passionate about designing efficient systems at the intersection of hardware and signal processing. My experience spans FPGA development, system-level design, CAD-based prototyping. Beyond the lab, I am committed to inclusive innovation, such as redesigning neuroimaging caps for textured hair, mentoring youth in 3D design and coding through Project Think, being involved in NSBE, and leading through the Annenberg Leadership Forum."
   },
   {
     "objectID": "resources.html",
