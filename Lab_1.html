@@ -172,8 +172,8 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="design-and-testing-methodology" class="level2">
 <h2 class="anchored" data-anchor-id="design-and-testing-methodology">Design and Testing Methodology</h2>
+<p>We assembled the E155 development board by soldering SMT and THT components, followed by verifying voltage regulators (3.3V and 5V). Testing involved loading a pre-written FPGA design to blink LEDs and then programming the MCU to read and echo signals. Once verified, we wrote our own Verilog modules to interface DIP switches with LEDs and a 7-segment display, synthesizing the design in Lattice Radiant and simulating with ModelSim. Git was used to track project files.</p>
 <p>The on-board high-speed oscillator (HSOSC) from the iCE40 UltraPlus primitive library was used to generate a clock signal at 24 MHz. Then, a counter was used to divide the high-frequency clock signal down so that the blinking frequency could be easily visualized using one of the on-board LEDs.</p>
-<p>The design was developed using a simple clock divider module which drives the external LED.</p>
 </section>
 <section id="technical-documentation" class="level2">
 <h2 class="anchored" data-anchor-id="technical-documentation">Technical Documentation</h2>
@@ -181,7 +181,7 @@ ul.task-list li input[type="checkbox"] {
 <section id="block-diagram" class="level3">
 <h3 class="anchored" data-anchor-id="block-diagram"><strong>Block Diagram</strong></h3>
 <p><strong>Figure 1: Block diagram of the Verilog design.</strong></p>
-<p>The block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module <code>top</code> includes two submodules: the high-speed oscillator block (<code>HSOSC</code>) and the clock divider module (<code>clk_divider</code>).</p>
+<p>The block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module <code>lab1_bb</code> includes two submodules: the high-speed oscillator block (<code>HSOSC</code>) and the 7 segement display <code>sevenseg_dis</code>.</p>
 </section>
 <section id="schematic" class="level3">
 <h3 class="anchored" data-anchor-id="schematic">Schematic</h3>
@@ -204,7 +204,13 @@ ul.task-list li input[type="checkbox"] {
 </section>
 <section id="ai-prototype-summary" class="level2">
 <h2 class="anchored" data-anchor-id="ai-prototype-summary">AI Prototype Summary</h2>
-<p>This section includes generated code, easy-to-read chat transcripts, and a reflection on how well the AI-assisted workflow performed.</p>
+<p>When conducting the AI prototype summary, the LLM I utilized was Microsoft’s Copilot. I prompted it to “Write SystemVerilog HDL to leverage the internal high-speed oscillator in the Lattice UP5K FPGA and blink an LED at 2 Hz, using idiomatic SystemVerilog. Copilot produced a short module that instantiated the UP5K high-speed oscillator, divided the clock with a counter, and drove an LED. The style was pretty clean—logic types, always_ff @(posedge clk) for the counter. However, when I pasted it into a fresh Lattice Radiant project and hit Synthesize, Radiant failed immediately with a syntax error: Copilot had dropped a closing parenthesis in the oscillator instantiation and missed a semicolon at the end of a localparam line. After I copied Radiant’s error text back into Copilot, it regenerated the block with the missing ) and ; added. With those fixed, the synthesis was completed.</p>
+<p>Quality-wise, I’d rate Copilot’s output as “good scaffolding, needs verification.” It nailed the overall structure and used modern SystemVerilog constructs I like adopting. It also wrote a clear reset path for the counter. None of those were brand-new to me, but it was helpful to see them composed neatly in a minimal example. If I did this again, I’d tighten my workflow in <strong>three</strong> ways:</p>
+<ul>
+<li><p>Treat the LLM as a code generator, not an authority. I’ll immediately run the output, then feed exact tool errors back to the model for focused corrections.</p></li>
+<li><p>Ask the LLM to “emit compile-ready, tool-specific primitives” and include a checklist in the prompt. That nudge seems to reduce trivial mistakes.</p></li>
+<li><p>Add a quick unit sanity check in the prompt: “Assume ~48 MHz HFOSC; show the counter width/math to reach ~2 Hz.” That forces the model to spell out the divide math, which is convenient to verify before synthesis.</p></li>
+</ul>
 
 
 </section>
