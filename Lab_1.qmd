@@ -1,0 +1,41 @@
+---
+title: "FPGA Lab Report: High-Speed Oscillator LED Blinker"
+---
+
+## Introduction
+In this lab, a design was implemented on the FPGA to demonstrate the functionality of the on-board high-speed oscillator by blinking one of the on-board LEDs. The high-speed oscillator was configured at a frequency of 48 MHz and divided down using a counter to achieve a blinking frequency of 2.4 Hz.
+
+## Design and Testing Methodology
+The on-board high-speed oscillator (HSOSC) from the iCE40 UltraPlus primitive library was used to generate a clock signal at 24 MHz. Then, a counter was used to divide the high-frequency clock signal down so that the blinking frequency could be easily visualized using one of the on-board LEDs.
+
+The design was developed using a simple clock divider module which drives the external LED.
+
+## Technical Documentation
+The source code for the project can be found in the associated [GitHub repository](https://github.com/brbownds/e155-lab1).
+
+### **Block Diagram**
+
+**Figure 1: Block diagram of the Verilog design.**
+
+The block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module `top` includes two submodules: the high-speed oscillator block (`HSOSC`) and the clock divider module (`clk_divider`).
+
+### Schematic
+
+Figure 2: Schematic of the physical circuit.
+
+Figure 2 shows the physical layout of the design. An internal 100 kΩ pull-up resistor was used to ensure the active-low reset pin was not floating. The output LED was connected using a 1 kΩ current-limiting resistor to ensure the output current (~2.6 mA) did not exceed the maximum output current of the FPGA I/O pins.
+
+## Results and Discussion
+The design met all intended design objectives.
+
+### Testbench Simulation
+
+Figure 3: Screenshot of a QuestaSim simulation demonstrating the blinking output signal.
+
+Note that the timescale for the clock divider was modified to divide by 4. If a more precise output frequency was desired, a more sophisticated counter could be developed. The current design only allows for the clock to be divided by powers of two.
+
+## Conclusion
+The design successfully blinked an external LED using the on-board high-speed oscillator. I spent a total of **two hours** working on this lab.
+
+## AI Prototype Summary
+This section includes generated code, easy-to-read chat transcripts, and a reflection on how well the AI-assisted workflow performed.

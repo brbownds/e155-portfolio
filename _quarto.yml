@@ -2,12 +2,19 @@ project:
   type: website
 
 website:
-  title: "E155"
+  title: "Broderick Bownds"
   navbar:
     left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+      - href: resources.qmd
+        text: Resources
+      - text: E155 Labs
+        menu:
+          - href: Lab_1.qmd
+            text: Lab 1
+          - href: Lab_2.qmd
+            text: Lab 2
+      - href: blog.qmd
+        text: Blog
 
 format:
   html:
