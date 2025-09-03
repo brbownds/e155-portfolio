@@ -6,18 +6,19 @@ title: "FPGA Lab Report: High-Speed Oscillator LED Blinker"
 In this lab, a design was implemented on the FPGA to demonstrate the functionality of the on-board high-speed oscillator by blinking one of the on-board LEDs. The high-speed oscillator was configured at a frequency of 48 MHz and divided down using a counter to achieve a blinking frequency of 2.4 Hz.
 
 ## Design and Testing Methodology
-The on-board high-speed oscillator (HSOSC) from the iCE40 UltraPlus primitive library was used to generate a clock signal at 24 MHz. Then, a counter was used to divide the high-frequency clock signal down so that the blinking frequency could be easily visualized using one of the on-board LEDs.
+We assembled the E155 development board by soldering SMT and THT components, followed by verifying voltage regulators (3.3V and 5V). Testing involved loading a pre-written FPGA design to blink LEDs and then programming the MCU to read and echo signals. Once verified, we wrote our own Verilog modules to interface DIP switches with LEDs and a 7-segment display, synthesizing the design in Lattice Radiant and simulating with ModelSim. Git was used to track project files.
 
-The design was developed using a simple clock divider module which drives the external LED.
+The on-board high-speed oscillator (HSOSC) from the iCE40 UltraPlus primitive library was used to generate a clock signal at 24 MHz. Then, a counter was used to divide the high-frequency clock signal down so that the blinking frequency could be easily visualized using one of the on-board LEDs.
 
 ## Technical Documentation
 The source code for the project can be found in the associated [GitHub repository](https://github.com/brbownds/e155-lab1).
 
 ### **Block Diagram**
 
+
 **Figure 1: Block diagram of the Verilog design.**
 
-The block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module `top` includes two submodules: the high-speed oscillator block (`HSOSC`) and the clock divider module (`clk_divider`).
+The block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module `lab1_bb` includes two submodules: the high-speed oscillator block (`HSOSC`) and the 7 segement display `sevenseg_dis`.
 
 ### Schematic
 
@@ -38,4 +39,12 @@ Note that the timescale for the clock divider was modified to divide by 4. If a 
 The design successfully blinked an external LED using the on-board high-speed oscillator. I spent a total of **two hours** working on this lab.
 
 ## AI Prototype Summary
-This section includes generated code, easy-to-read chat transcripts, and a reflection on how well the AI-assisted workflow performed.
+When conducting the AI prototype summary, the LLM I utilized was Microsoft's Copilot. I prompted it to “Write SystemVerilog HDL to leverage the internal high-speed oscillator in the Lattice UP5K FPGA and blink an LED at 2 Hz, using idiomatic SystemVerilog. Copilot produced a short module that instantiated the UP5K high-speed oscillator, divided the clock with a counter, and drove an LED. The style was pretty clean—logic types, always_ff @(posedge clk) for the counter. However, when I pasted it into a fresh Lattice Radiant project and hit Synthesize, Radiant failed immediately with a syntax error: Copilot had dropped a closing parenthesis in the oscillator instantiation and missed a semicolon at the end of a localparam line. After I copied Radiant’s error text back into Copilot, it regenerated the block with the missing ) and ; added. With those fixed, the synthesis was completed.
+
+Quality-wise, I’d rate Copilot’s output as “good scaffolding, needs verification.” It nailed the overall structure and used modern SystemVerilog constructs I like adopting. It also wrote a clear reset path for the counter. None of those were brand-new to me, but it was helpful to see them composed neatly in a minimal example. If I did this again, I’d tighten my workflow in **three** ways:
+
+- Treat the LLM as a code generator, not an authority. I’ll immediately run the output, then feed exact tool errors back to the model for focused corrections.
+
+- Ask the LLM to “emit compile-ready, tool-specific primitives” and include a checklist in the prompt. That nudge seems to reduce trivial mistakes.
+
+- Add a quick unit sanity check in the prompt: “Assume ~48 MHz HFOSC; show the counter width/math to reach ~2 Hz.” That forces the model to spell out the divide math, which is convenient to verify before synthesis.
