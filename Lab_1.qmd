@@ -31,20 +31,20 @@ Here is the following truth table:
 | `[3:0]s`| `[2:0]led`| `[6:0]seg` |
 |:-------:|:---------:|:----------:|
 | 0000 | 000   | 0000001    |
-| 0001 | 000   | 1001111    |
-| 0010 | 000   | 0010010    |
-| 0011 | 010   | 0000110    |
-| 0100 | 001   | 1001100    |
+| 0001 | 001   | 1001111    |
+| 0010 | 001   | 0010010    |
+| 0011 | 000   | 0000110    |
+| 0100 | 000   | 1001100    |
 | 0101 | 001   | 0100100    |
 | 0110 | 001   | 0100000    |
-| 0111 | 011   | 0001111    |
-| 1000 | 001   | 0000000    |
+| 0111 | 000   | 0001111    |
+| 1000 | 000   | 0000000    |
 | 1001 | 001   | 0001100    |
 | 1010 | 001   | 0001000    |
-| 1011 | 011   | 1100000    |
-| 1100 | 000   | 0110001    |
-| 1101 | 000   | 1000010    |
-| 1110 | 000   | 0110000    |
+| 1011 | 000   | 1100000    |
+| 1100 | 010   | 0110001    |
+| 1101 | 011   | 1000010    |
+| 1110 | 011   | 0110000    |
 | 1111 | 010   | 0111000    |
 
 ### **Technical Documentation**
@@ -84,6 +84,8 @@ Note that the timescale for the clock divider was modified to divide by 4. If a 
 Figure 6: Screenshot of a oscilliscope waveform validating the exact frequency of 2.41 Hz. 
 
 ## Conclusion
+
+
 The design successfully blinked an external LED using the on-board high-speed oscillator. I spent a total of **10+ hours** working on this lab.
 
 ## AI Prototype Summary
