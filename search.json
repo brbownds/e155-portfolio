@@ -4,21 +4,14 @@
     "href": "Lab_2.html",
     "title": "Multiplexing Seven Segment Display",
     "section": "",
-    "text": "Figure 1:\nIn this lab, a design"
+    "text": "Figure 1:\nIn this lab, a time-multiplexed display system was implemented using an FPGA Upduino Board to drive two seven-segment displays with a single decoder module. The system displayed two independent hexadecimal values sourced from two DIP switches and showed their sum on five LEDs. The design utilized transistor-based current control to safely drive the common anodes of the displays, ensuring proper brightness and avoiding bleeding or ghosting. ## Design and Testing Methodology"
   },
   {
     "objectID": "Lab_2.html#introduction",
     "href": "Lab_2.html#introduction",
     "title": "Multiplexing Seven Segment Display",
     "section": "",
-    "text": "Figure 1:\nIn this lab, a design"
-  },
-  {
-    "objectID": "Lab_2.html#design-and-testing-methodology",
-    "href": "Lab_2.html#design-and-testing-methodology",
-    "title": "Multiplexing Seven Segment Display",
-    "section": "Design and Testing Methodology",
-    "text": "Design and Testing Methodology"
+    "text": "Figure 1:\nIn this lab, a time-multiplexed display system was implemented using an FPGA Upduino Board to drive two seven-segment displays with a single decoder module. The system displayed two independent hexadecimal values sourced from two DIP switches and showed their sum on five LEDs. The design utilized transistor-based current control to safely drive the common anodes of the displays, ensuring proper brightness and avoiding bleeding or ghosting. ## Design and Testing Methodology"
   },
   {
     "objectID": "Lab_2.html#fpga-design",
