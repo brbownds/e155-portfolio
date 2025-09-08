@@ -8,8 +8,7 @@ title: "Multiplexing Seven Segment Display"
 Figure 1:
 
 
-In this lab, a design
-
+In this lab, a time-multiplexed display system was implemented using an FPGA Upduino Board to drive two seven-segment displays with a single decoder module. The system displayed two independent hexadecimal values sourced from two DIP switches and showed their sum on five LEDs. The design utilized transistor-based current control to safely drive the common anodes of the displays, ensuring proper brightness and avoiding bleeding or ghosting.
 ## Design and Testing Methodology
 
 
