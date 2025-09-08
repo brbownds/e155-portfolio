@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>E155 Resources – Broderick Bownds</title>
+<title>Multiplexing Seven Segment Display – Broderick Bownds</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -90,7 +90,7 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./resources.html" aria-current="page"> 
+    <a class="nav-link" href="./resources.html"> 
 <span class="menu-text">Resources</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -123,15 +123,31 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#design-and-testing-methodology" id="toc-design-and-testing-methodology" class="nav-link" data-scroll-target="#design-and-testing-methodology">Design and Testing Methodology</a></li>
+  <li><a href="#fpga-design" id="toc-fpga-design" class="nav-link" data-scroll-target="#fpga-design">FPGA Design</a>
+  <ul class="collapse">
+  <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation"><strong>Technical Documentation</strong></a></li>
+  <li><a href="#block-diagram" id="toc-block-diagram" class="nav-link" data-scroll-target="#block-diagram"><strong>Block Diagram</strong></a></li>
+  <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
+  </ul></li>
+  <li><a href="#results-and-discussion" id="toc-results-and-discussion" class="nav-link" data-scroll-target="#results-and-discussion">Results and Discussion</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#ai-prototype-summary" id="toc-ai-prototype-summary" class="nav-link" data-scroll-target="#ai-prototype-summary">AI Prototype Summary</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">E155 Resources</h1>
+<h1 class="title">Multiplexing Seven Segment Display</h1>
 </div>
 
 
@@ -148,9 +164,92 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>link to the course website <a href="https://hmc-e155.github.io/">here</a></p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p><img src="IMG_1.png" class="img-fluid" width="600"></p>
+<p>Figure 1:</p>
+<p>In this lab, a design</p>
+</section>
+<section id="design-and-testing-methodology" class="level2">
+<h2 class="anchored" data-anchor-id="design-and-testing-methodology">Design and Testing Methodology</h2>
+</section>
+<section id="fpga-design" class="level2">
+<h2 class="anchored" data-anchor-id="fpga-design">FPGA Design</h2>
+<p>On the E155 FPGA board, the inputs and outputs are organized around the switches, LEDs, and 7-segment display. The four DIP switches <code>s[3:0]</code> serve as user inputs, letting you select binary values that feed into the logic of the design. The three LEDs <code>led[2:0]</code> provide simple output indicators: <code>led[0]</code> and <code>led[1]</code> respond to combinations of the switch inputs, while <code>led[2]</code> blinks at a steady rate using the FPGA’s internal 48 MHz oscillator. Finally, the seven outputs <code>seg[6:0]</code> drive the segments of a common anode 7-segment display, which decodes the switch settings into a numeric pattern from to 0 to F.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th><strong>Signal Name</strong></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>[3:0] s</code></td>
+<td>input</td>
+<td>DIP switches (SW6)</td>
+</tr>
+<tr class="even">
+<td><code>[2:0] led</code></td>
+<td>output</td>
+<td>LEDs (found on P42, P38, and P28)</td>
+</tr>
+<tr class="odd">
+<td><code>[6:0] seg</code></td>
+<td>output</td>
+<td>common anode outputs on 7-segment display</td>
+</tr>
+</tbody>
+</table>
+<section id="technical-documentation" class="level3">
+<h3 class="anchored" data-anchor-id="technical-documentation"><strong>Technical Documentation</strong></h3>
+<p>The source code for the project can be found in the associated <a href="https://github.com/brbownds/e155-lab2">GitHub repository</a>.</p>
+</section>
+<section id="block-diagram" class="level3">
+<h3 class="anchored" data-anchor-id="block-diagram"><strong>Block Diagram</strong></h3>
+<p>Figure 2: Block diagram of the Verilog design.</p>
+<p>The block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module <code>lab1_bb</code> includes two submodules: the high-speed oscillator block (<code>HSOSC</code>) and the 7 segement display <code>sevenseg_dis</code>.</p>
+</section>
+<section id="schematic" class="level3">
+<h3 class="anchored" data-anchor-id="schematic">Schematic</h3>
+<p><img src="IMG_0755.png" class="img-fluid" width="600"></p>
+<p>Figure 3: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.</p>
+<p><img src="calc.png" class="img-fluid" width="500"></p>
+<p>Figure 4: Show the internal wire from the FPGA to the 7-segment display.</p>
+<p>This shows the physical layout of the design. An internal 1.5 kΩ pull-up resistor was used to ensure the active-low reset pin was not floating. The current running through the diode of the seven segment display (~1 mA) was divided by the Vcc subtracted by the forward voltage of a red LED.</p>
+</section>
+</section>
+<section id="results-and-discussion" class="level2">
+<h2 class="anchored" data-anchor-id="results-and-discussion">Results and Discussion</h2>
+<p>The design met all intended design objectives through our testbench simulations.</p>
+<section id="testbench-simulation" class="level4">
+<h4 class="anchored" data-anchor-id="testbench-simulation">Testbench Simulation</h4>
+<p><img src="testbench_lab1.png" class="img-fluid"> Figure 5: Screenshot of a QuestaSim simulation demonstrating the blinking output signal.</p>
+<p>Note that the timescale for the clock divider was modified to divide by 4. If a more precise output frequency was desired, a more sophisticated counter could be developed. The current design only allows for the clock to be divided by powers of two. (MIGHT GET RID OF)</p>
+</section>
+<section id="oscilliscope-of-blinking-led" class="level4">
+<h4 class="anchored" data-anchor-id="oscilliscope-of-blinking-led">Oscilliscope of Blinking LED</h4>
+<p><img src="OSCOPE.png" class="img-fluid" width="800"></p>
+<p>Figure 6: Screenshot of a oscilliscope waveform validating the exact frequency of 2.41 Hz.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>TALK MORE ABOUT THIS The design successfully blinked an external LED using the on-board high-speed oscillator. I spent a total of <strong>10+ hours</strong> working on this lab.</p>
+</section>
+<section id="ai-prototype-summary" class="level2">
+<h2 class="anchored" data-anchor-id="ai-prototype-summary">AI Prototype Summary</h2>
+<p>When conducting the AI prototype summary, the LLM I utilized was Microsoft’s Copilot. I prompted it to “Write SystemVerilog HDL to leverage the internal high-speed oscillator in the Lattice UP5K FPGA and blink an LED at 2 Hz, using idiomatic SystemVerilog. Copilot produced a short module that instantiated the UP5K high-speed oscillator, divided the clock with a counter, and drove an LED. The style was pretty clean for the counter. However, when I pasted it into a fresh Lattice Radiant project and hit Synthesize, Radiant failed immediately with a syntax error: Copilot had dropped a closing parenthesis in the oscillator instantiation and missed a semicolon at the end of a localparam line. After I copied Radiant’s error text back into Copilot, it regenerated the block with the missing ) and ; added. With those fixed, the synthesis was completed.</p>
+<p>I would rate Copilot’s output as “good scaffolding, needs verification.” It nailed the overall structure and used modern SystemVerilog constructs I like adopting. It also wrote a clear reset path for the counter. None of those were brand-new to me, but it was helpful to see them composed neatly in a minimal example. If I did this again, I would tighten my workflow in <strong>three</strong> ways:</p>
+<ul>
+<li><p>Treat the LLM as a code generator, not an authority. I’ll immediately run the output, then feed exact tool errors back to the model for focused corrections.</p></li>
+<li><p>Ask the LLM to “emit compile ready, tool-specific primitives” and include a checklist in the prompt. That nudge seems to reduce trivial mistakes.</p></li>
+<li><p>Add a quick unit sanity check in the prompt: “Assume ~48 MHz HFOSC; show the counter width/math to reach ~2 Hz.” That forces the model to spell out the divide math, which is convenient to verify before synthesis.</p></li>
+</ul>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
