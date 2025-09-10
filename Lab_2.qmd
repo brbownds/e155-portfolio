@@ -29,29 +29,33 @@ The source code for the project can be found in the associated [GitHub repositor
 ### **Block Diagram**
 ![](Block2.png){width=600}
 
-Figure 2: Block diagram of the Verilog design.
+Figure 1: Block diagram of the Verilog design.
 
 The block diagram in Figure 2 demonstrates the overall architecture of the design. The top-level module `lab2_bb` includes one other module: the seven segment decoder while all the other outputs are internal. 
 
 ### Schematic
 ![](Sch2.png){width=600}
 
-Figure 3: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.
+Figure 2: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.
 
-Figure 4: Shows the physical layout of the design. A explanation below why each resistor was intentionally used:
+
+
+![](calc2.png){width=600}
+
+Figure 3: Shows the calculations of the resistors from Figure 3. A explanation below why each resistor was intentionally used:
 
 **(1) PNP transistor:** The transistor drives a lot of current and ensure that the FPGA pins were not sinking more than 8mA (our safety margin was 4mA). So thefore the base emitter saturation voltage (V~BE(sat)~ = 0.7V). Taken into account then our resistor value is **650Ω.**
 
 **(2) Green LEDs:** The forward voltage of a green LED is typically ~2V and we want current to be reasonably low at ~5mA and still be somewhat. Our resistor value is **260Ω.**
 
-**(3) 7-Segment:** The PNP transistor also contains a collector emitter saturation voltage (V~CE(sat)~ of 0.2V. The transistor drives a lot of current and ensure that the FPGA pins were not sinking more than 8mA (the safety margin used was 4mA). Then take into account the red LED forward voltage (~1.8V). Therefore the resistor value is **1.3kΩ.**
+**(3) 7-Segment:** The PNP transistor also contains a collector emitter saturation voltage (V~CE(sat)~ of 0.2V. The transistor drives a lot of current and ensure that the FPGA pins were not sinking more than 8mA (the safety margin used was 1mA). Then take into account the red LED forward voltage (~1.8V). Therefore the resistor value is **1.3kΩ.**
 
 ## Results and Discussion
 The QuestaSim confirmed the correct operation across all 256 input combinations and expected values. `disp0` and `disp1` toggled correctly in the end. This proved to the more diffciult protion of the lab was debugging and following the modular flow of how and what was affecting `disp0` and `disp1`. The segment encodings matched the expected hexadecimal vlaues as well as the LED sum (`[4:0]led`) mathced the mathematical sum in all cases. The dual seven segment provided a clean display with no signs of ghosting. Some limitations and improvements could be adding a programable counter division could help with flexibility because the multiplexing frequency was fixed. 
 
 #### Testbench Simulation
-![](testbench_lab2.png)
-Figure 5: Screenshot of a QuestaSim simulation demonstrating that all 256 tests succesfully work for the singel seven segment decoder module. We also see the select line: `select_mux` toggles and switches, therefore triggering `disp0` and `disp1` correctly.
+![](finish.png)
+Figure 4: Screenshot of a QuestaSim simulation demonstrating that all 256 tests succesfully work for the singel seven segment decoder module. We also see the select line: `select_mux` toggles and switches, therefore triggering `disp0` and `disp1` correctly.
 
 ## Conclusion
 ![](.png)
