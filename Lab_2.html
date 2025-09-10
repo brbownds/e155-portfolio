@@ -123,8 +123,24 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#design-and-testing-methodology" id="toc-design-and-testing-methodology" class="nav-link" data-scroll-target="#design-and-testing-methodology">Design and Testing Methodology</a></li>
+  <li><a href="#fpga-design" id="toc-fpga-design" class="nav-link" data-scroll-target="#fpga-design">FPGA Design</a>
+  <ul class="collapse">
+  <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation"><strong>Technical Documentation</strong></a></li>
+  <li><a href="#block-diagram" id="toc-block-diagram" class="nav-link" data-scroll-target="#block-diagram"><strong>Block Diagram</strong></a></li>
+  <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
+  </ul></li>
+  <li><a href="#results-and-discussion" id="toc-results-and-discussion" class="nav-link" data-scroll-target="#results-and-discussion">Results and Discussion</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#ai-prototype-summary" id="toc-ai-prototype-summary" class="nav-link" data-scroll-target="#ai-prototype-summary">AI Prototype Summary</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -148,83 +164,97 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Coming Soon <!--
-## Introduction
-![](IMG_1.png){width=600}
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>In this lab, a time-multiplexed display system was implemented using an FPGA Upduino Board to drive a dual seven-segment display with a single decoder module. The system displayed two independent hexadecimal values sourced from two DIP switches and showed their sum on five LEDs. The design utilized transistor-based current control such as PNP transistors to safely drive the common anodes of the displays, ensuring proper brightness and avoiding bleeding or ghosting.</p>
+</section>
+<section id="design-and-testing-methodology" class="level2">
+<h2 class="anchored" data-anchor-id="design-and-testing-methodology">Design and Testing Methodology</h2>
+<p>The design included the iCE FPGA’s high-speed osciallator (HSOSC) divided down by a counter to slow down the multiplexing clock. The slow clock toggles between enabling the left or right digit by activating its common anode transistor whiel routing the correspodnign 4-bit input (<code>s0</code> or <code>s1</code>) into the seven segment decoder. If too fast or slow then there would be flickering or the two numbers would bleed together.</p>
+<p>The outputs of the DIP swithes provided the two hexadecimal values (<code>s0</code> and <code>s1</code>). These values are added and the (max number is 30, 5-bit wide) was displayed on five external LEDs. The seven segment require additonal transistor circuitry to handle the higher current of the common anode pins, since a FPGA pin cannot source the needed current (~8mA).</p>
+</section>
+<section id="fpga-design" class="level2">
+<h2 class="anchored" data-anchor-id="fpga-design">FPGA Design</h2>
+<p>The FPGA design for this lab was constructed in a modular and hierarchical method to meet teh multiplexed display instructions. The top level module <code>lab2_bb</code> coordinated the system while <code>sevenseg</code> provided the specific functionality.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 24%">
+<col style="width: 43%">
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>Signal Name</strong></th>
+<th><strong>Type</strong></th>
+<th><strong>Details</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>[3:0] s0, s1</code></td>
+<td>input</td>
+<td>DIP switches</td>
+</tr>
+<tr class="even">
+<td><code>[5:0] led</code></td>
+<td>output</td>
+<td>LEDs (the sum of s0 and s1)</td>
+</tr>
+<tr class="odd">
+<td><code>[6:0] seg</code></td>
+<td>output</td>
+<td>common anode outputs on 7-segment display</td>
+</tr>
+<tr class="even">
+<td><code>disp0, disp1</code></td>
+<td>internal</td>
+<td>the “enable” on the mux taking in <code>s0</code> and <code>s1</code> as inputs</td>
+</tr>
+</tbody>
+</table>
+<p>There is a top level module <code>lab2_bb</code> that instaniates the iCE40 oscillator and uses <code>lab2_bbtb</code> to verify simulation. The modules divides frequency using a 25-bit counter and have it “drive high” at the 19th bit (or when <code>counter ==(2.^19)</code>). This toggles a select signal <code>select_mux</code> to switch between the two hexadecimal inputs. Then it assigns the sum out (<code>assign led = s0 + s1</code>). Then control the digit enable signals <code>disp0</code> and <code>disp1</code> to ensure one display is high at a time. The <code>sevenseg</code> module is reused from Lab 1 and is a pure combinational decoder.</p>
+<section id="technical-documentation" class="level3">
+<h3 class="anchored" data-anchor-id="technical-documentation"><strong>Technical Documentation</strong></h3>
+<p>The source code for the project can be found in the associated <a href="https://github.com/brbownds/e155-lab2">GitHub repository</a>.</p>
+</section>
+<section id="block-diagram" class="level3">
+<h3 class="anchored" data-anchor-id="block-diagram"><strong>Block Diagram</strong></h3>
+<p><img src="Block2.png" class="img-fluid" width="600"></p>
+<p>Figure 2: Block diagram of the Verilog design.</p>
+<p>The block diagram in Figure 2 demonstrates the overall architecture of the design. The top-level module <code>lab2_bb</code> includes one other module: the seven segment decoder while all the other outputs are internal.</p>
+</section>
+<section id="schematic" class="level3">
+<h3 class="anchored" data-anchor-id="schematic">Schematic</h3>
+<p><img src="Sch2.png" class="img-fluid" width="600"></p>
+<p>Figure 3: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.</p>
+<p>Figure 4: Shows the physical layout of the design. A explanation below why each resistor was intentionally used:</p>
+<p><strong>(1) PNP transistor:</strong> The transistor drives a lot of current and ensure that the FPGA pins were not sinking more than 8mA (our safety margin was 4mA). So thefore the base emitter saturation voltage (V<sub>BE(sat)</sub> = 0.7V). Taken into account then our resistor value is <strong>650Ω.</strong></p>
+<p><strong>(2) Green LEDs:</strong> The forward voltage of a green LED is typically ~2V and we want current to be reasonably low at ~5mA and still be somewhat. Our resistor value is <strong>260Ω.</strong></p>
+<p><strong>(3) 7-Segment:</strong> The PNP transistor also contains a collector emitter saturation voltage (V<sub>CE(sat)</sub> of 0.2V. The transistor drives a lot of current and ensure that the FPGA pins were not sinking more than 8mA (the safety margin used was 4mA). Then take into account the red LED forward voltage (~1.8V). Therefore the resistor value is <strong>1.3kΩ.</strong></p>
+</section>
+</section>
+<section id="results-and-discussion" class="level2">
+<h2 class="anchored" data-anchor-id="results-and-discussion">Results and Discussion</h2>
+<p>The QuestaSim confirmed the correct operation across all 256 input combinations and expected values. <code>disp0</code> and <code>disp1</code> toggled correctly in the end. This proved to the more diffciult protion of the lab was debugging and following the modular flow of how and what was affecting <code>disp0</code> and <code>disp1</code>. The segment encodings matched the expected hexadecimal vlaues as well as the LED sum (<code>[4:0]led</code>) mathced the mathematical sum in all cases. The dual seven segment provided a clean display with no signs of ghosting. Some limitations and improvements could be adding a programable counter division could help with flexibility because the multiplexing frequency was fixed.</p>
+<section id="testbench-simulation" class="level4">
+<h4 class="anchored" data-anchor-id="testbench-simulation">Testbench Simulation</h4>
+<p><img src="testbench_lab2.png" class="img-fluid"> Figure 5: Screenshot of a QuestaSim simulation demonstrating that all 256 tests succesfully work for the singel seven segment decoder module. We also see the select line: <code>select_mux</code> toggles and switches, therefore triggering <code>disp0</code> and <code>disp1</code> correctly.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p><img src=".png" class="img-fluid"></p>
+<p>In this lab, I successfully designed and implemented a time-multiplexed dual seven-segment display system on the FPGA. By dividing down the high-speed oscillator, I generated a stable clock that alternately enabled the two display digits while sharing a single segment decoder. The system correctly displayed two independent hexadecimal values and their binary sum on external LEDs. Both simulation and hardware testing confirmed the correctness of the design.</p>
+<p>Lab 2 emphasized the importance of time multiplexing as a resource-sharing strategy. I learned how to coordinate hardware timing so that multiple devices could be driven with limited FPGA resources. Debugging in QuestaSim revealed subtle issues, such as uninitialized signals and reset polarity mismatches, which highlighted the difference between simulation behavior and physical FPGA behavior. If given more time, I would experiment with brightness control through pulse-width modulation (PWM) to explore display dimming.</p>
+</section>
+<section id="ai-prototype-summary" class="level2">
+<h2 class="anchored" data-anchor-id="ai-prototype-summary">AI Prototype Summary</h2>
+<p>The LLM I used to generate SystemVerilog was Copilot. The quality of the LLM-generated SystemVerilog code was surprisingly high. The initial response included a clean and modular design with a separate decoder module and a top-level multiplexing module. The use of <code>always_comb</code> and <code>always_ff</code> blocks was appropriate and aligned with best practices for synthesizable code. The logic for toggling between inputs using a simple clock divider was intuitive and easy to follow. I’d rate the output high, mainly because it was correct, sound, and modular, and this is ideal for synthesis and simulation.</p>
+<p>One interesting aspect was the use of <code>logic</code> instead of <code>reg</code> or <code>wire</code>, which is more idiomatic in SystemVerilog but less common in older Verilog codebases. The <code>always_comb</code> block was also a nice touch because it ensures combinational behavior without the risk of unintended latches. Additionally, the use of a separate decoder module made the design more reusable and testable, which is something I hadn’t considered in my initial approach. The design was synthesized successfully and behaved correctly in simulation.</p>
+<p>If I were able to redo Lab 2 and implement an LLM in my HDL workflow, I would: - Start with a simulation-first mindset: Even if the code looks correct, simulating it early helps catch subtle issues like latch inference or multiple drivers. - Use the LLM for testbench generation: It’s great at generating stimulus and expected output logic, which speeds up verification.</p>
 
-Figure 1: Shows the 
 
-
-In this lab, a time-multiplexed display system was implemented using an FPGA Upduino Board to drive a dual seven-segment display with a single decoder module. The system displayed two independent hexadecimal values sourced from two DIP switches and showed their sum on five LEDs. The design utilized transistor-based current control such as PNP transistors to safely drive the common anodes of the displays, ensuring proper brightness and avoiding bleeding or ghosting.
-
-## Design and Testing Methodology
-The design included the iCE FPGA's high-speed osciallator (HSOSC) divided down by a counter to slow down the multiplexing clock. The slow clock toggles between enabling the left or right digit by activating its common anode transistor whiel routing the correspodnign 4-bit input (`s0` or `s1`) into the seven segment decoder. If too fast or slow then there would be flickering or the two numbers would bleed together.
-
-The outputs of the DIP swithes provided the two hexadecimal values (`s0` and `s1`). These values are added and the (max number is 30, 5-bit wide) was displayed on five external LEDs. The seven segment require additonal transistor circuitry to handle the higher current of the common anode pins, since a FPGA pin cannot source the needed current (~8mA). 
-
-## FPGA Design
-The FPGA design for this lab was constructed in a modular and hierarchical method to meet teh multiplexed display instructions. The top level module `lab2_bb` coordinated the system while `sevenseg` provided the specific functionality. 
-
-|**Signal Name** | **Type** | **Details**      |
-|-------------|----------|------------------|
-|  `[3:0] s0, s1`  |   input  | DIP switches  | 
-|  `[5:0] led`|   output | LEDs (the sum of s0 and s1)  |
-|  `[6:0] seg`|   output | common anode outputs on 7-segment display|
-|  `disp0, disp1`|   internal | the "enable" on the mux taking in `s0` and `s1` as inputs|
-
-There is a top level module `lab2_bb` that instaniates the iCE40 oscillator and uses `lab2_bbtb` to verify simulation. The modules divides frequency using a 25-bit counter and have it "drive high" at the 19th bit (or when `counter ==(2.^19)`). This toggles a select signal `select_mux` to switch between the two hexadecimal inputs. Then it assigns the sum out (`assign led = s0 + s1`). Then control the digit enable signals `disp0` and disp1` to ensure one display is high at a time. The `sevenseg` module is reused from Lab 1 and is a pure combinational decoder.
-
-### **Technical Documentation**
-The source code for the project can be found in the associated [GitHub repository](https://github.com/brbownds/e155-lab2).
-
-### **Block Diagram**
-
-
-Figure 2: Block diagram of the Verilog design.
-
-The block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module `lab2_bb` includes one other module: the seven segment decoder while all the other outputs are internal. 
-
-### Schematic
-![](IMG_0755.png){width=600}
-
-Figure 3: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.
-
-![](calc.png){width=500}
-
-Figure 4: Show the internal wire from the FPGA to the 7-segment display.
-
-
-This shows the physical layout of the design. A explanation below why each resistor was intentionally used:
-
-**Resistors for PNP transistor:** The transistor drives a lot of current and ensure that the FPGA pins were not sinking more than 8mA (our safety margin was 4mA). So thefore the base emitter saturation voltage (V~BE(sat)~ = 0.7V). Taken into account then our resistor value is **650Ω.**
-
-**Resistors for Green LEDs:** The forward voltage of a green LED is typically ~2V and we want current to be reasonably low at ~5mA and still be somewhat. Our resistor value is **260Ω.**
-
-**Resistors for 7-Segment:** The PNP transistor also contains a collector emitter saturation voltage (V~CE(sat)~ of 0.2V. The transistor drives a lot of current and ensure that the FPGA pins were not sinking more than 8mA (the safety margin used was 4mA). Then take into account the red LED forward voltage (~1.8V). Therefore the resistor value is **1.3kΩ.**
-
-## Results and Discussion
-The QuestaSim confirmed the correct operation across all 256 input combinations and expected values. `disp0` and `disp1` toggled correctly in the end. This proved to the more diffciult protion of the lab was debugging and following the modular flow of how and what was affecting `disp0` and `disp1`. The segment encodings matched the expected hexadecimal vlaues as well as the LED sum (`[4:0]led`) mathced the mathematical sum in all cases. The dual seven segment provided a clean display with no signs of ghosting. Some limitations and improvements could be adding a programable counter division could help with flexibility because the multiplexing frequency was fixed. 
-
-#### Testbench Simulation
-![](testbench_lab1.png)
-Figure 5: Screenshot of a QuestaSim simulation demonstrating the blinking output signal.
-
-Note that the timescale for the clock divider was modified to divide by 4. If a more precise output frequency was desired, a more sophisticated counter could be developed. The current design only allows for the clock to be divided by powers of two. (MIGHT GET RID OF)
-
-#### Oscilliscope of Blinking LED
-![](OSCOPE.png){width=800} 
-
-Figure 6: Screenshot of a oscilliscope waveform validating the exact frequency of 2.41 Hz. 
-
-## Conclusion
-In this lab, I successfully designed and implemented a time-multiplexed dual seven-segment display system on the FPGA. By dividing down the high-speed oscillator, I generated a stable  clock that alternately enabled the two display digits while sharing a single segment decoder. The system correctly displayed two independent hexadecimal values and their binary sum on external LEDs. Both simulation and hardware testing confirmed the correctness of the design.
-
-Lab 2 emphasized the importance of time multiplexing as a resource-sharing strategy. I learned how to coordinate hardware timing so that multiple devices could be driven with limited FPGA resources. Debugging in QuestaSim revealed subtle issues, such as uninitialized signals and reset polarity mismatches, which highlighted the difference between simulation behavior and physical FPGA behavior. If given more time, I would experiment with brightness control through pulse-width modulation (PWM) to explore display dimming.
-
-## AI Prototype Summary
---></p>
-
-
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
