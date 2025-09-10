@@ -17,7 +17,7 @@ The FPGA design for this lab was constructed in a modular and hierarchical metho
 |**Signal Name** | **Type** | **Details**      |
 |-------------|----------|------------------|
 |  `[3:0] s0, s1`  |   input  | DIP switches  | 
-|  `[5:0] led`|   output | LEDs (the sum of s0 and s1)  |
+|  `[4:0] led`|   output | LEDs (the sum of s0 and s1)  |
 |  `[6:0] seg`|   output | common anode outputs on 7-segment display|
 |  `disp0, disp1`|   internal | the "enable" on the mux taking in `s0` and `s1` as inputs|
 
@@ -27,14 +27,14 @@ There is a top level module `lab2_bb` that instaniates the iCE40 oscillator and 
 The source code for the project can be found in the associated [GitHub repository](https://github.com/brbownds/e155-lab2).
 
 ### **Block Diagram**
-![](Block2.png){width=600}
+![](Sch2.png){width=600}
 
 Figure 1: Block diagram of the Verilog design.
 
 The block diagram in Figure 2 demonstrates the overall architecture of the design. The top-level module `lab2_bb` includes one other module: the seven segment decoder while all the other outputs are internal. 
 
 ### Schematic
-![](Sch2.png){width=600}
+![](Sch22.png){width=600}
 
 Figure 2: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.
 
@@ -54,8 +54,12 @@ Figure 3: Shows the calculations of the resistors from Figure 3. A explanation b
 The QuestaSim confirmed the correct operation across all 256 input combinations and expected values. `disp0` and `disp1` toggled correctly in the end. This proved to the more diffciult protion of the lab was debugging and following the modular flow of how and what was affecting `disp0` and `disp1`. The segment encodings matched the expected hexadecimal vlaues as well as the LED sum (`[4:0]led`) mathced the mathematical sum in all cases. The dual seven segment provided a clean display with no signs of ghosting. Some limitations and improvements could be adding a programable counter division could help with flexibility because the multiplexing frequency was fixed. 
 
 #### Testbench Simulation
+![](.png)
+Figure 4: Screenshot of a QuestaSim simulation that the `sevenseg` module works with inputs `[3:0]s` and outputs `[6:0]seg` so we can also affirm and validate to move on to the top module `lab2_bb` for test simulation. 
+
+
 ![](finish.png)
-Figure 4: Screenshot of a QuestaSim simulation demonstrating that all 256 tests succesfully work for the singel seven segment decoder module. We also see the select line: `select_mux` toggles and switches, therefore triggering `disp0` and `disp1` correctly.
+Figure 5: Screenshot of a QuestaSim simulation demonstrating that all 256 tests succesfully work for the singel seven segment decoder module. We also see the select line: `select_mux` toggles and switches, therefore triggering `disp0` and `disp1` correctly.
 
 ## Conclusion
 ![](.png)
