@@ -2,6 +2,7 @@
 title: "Multiplexing Seven Segment Display"
 ---
 
+![](intro.png){width=600}
 
 ## Introduction
 In this lab, a time-multiplexed display system was implemented using an FPGA Upduino Board to drive a dual seven-segment display with a single decoder module. The system displayed two independent hexadecimal values sourced from two DIP switches and showed their sum on five LEDs. The design utilized transistor-based current control such as PNP transistors to safely drive the common anodes of the displays, ensuring proper brightness and avoiding bleeding or ghosting.
@@ -57,13 +58,19 @@ The QuestaSim confirmed the correct operation across all 256 input combinations 
 ![](.png)
 Figure 4: Screenshot of a QuestaSim simulation that the `sevenseg` module works with inputs `[3:0]s` and outputs `[6:0]seg` so we can also affirm and validate to move on to the top module `lab2_bb` for test simulation. 
 
-
-![](finish.png)
+<!--
+heinde
+dheihr
+-->
+![](9_10.png)
 Figure 5: Screenshot of a QuestaSim simulation demonstrating that all 256 tests succesfully work for the singel seven segment decoder module. We also see the select line: `select_mux` toggles and switches, therefore triggering `disp0` and `disp1` correctly.
 
-## Conclusion
-![](.png)
 
+
+![](zoom.png)
+Figure 5b: Screenshot of QuestaSim waveforms that show a simulation that executed a run time of 0.5 seconds instead of 50000 ns to see the toggle on the select line: `select_mux`. This initiates `disp0` and `disp1` to switch from LOW to HIGH and vice versa.
+
+## Conclusion
 In this lab, I successfully designed and implemented a time-multiplexed dual seven-segment display system on the FPGA. By dividing down the high-speed oscillator, I generated a stable  clock that alternately enabled the two display digits while sharing a single segment decoder. The system correctly displayed two independent hexadecimal values and their binary sum on external LEDs. Both simulation and hardware testing confirmed the correctness of the design.
 
 Lab 2 emphasized the importance of time multiplexing as a resource-sharing strategy. I learned how to coordinate hardware timing so that multiple devices could be driven with limited FPGA resources. Debugging in QuestaSim revealed subtle issues, such as uninitialized signals and reset polarity mismatches, which highlighted the difference between simulation behavior and physical FPGA behavior. If given more time, I would experiment with brightness control through pulse-width modulation (PWM) to explore display dimming.  I spent a total of **25** hours working on this lab.

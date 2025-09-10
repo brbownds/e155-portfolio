@@ -13,6 +13,16 @@ website:
             text: Lab 1
           - href: Lab_2.qmd
             text: Lab 2
+          - href: Lab_3.qmd
+            text: Lab 3
+          - href: Lab_4.qmd
+            text: Lab 4
+          - href: Lab_5.qmd
+            text: Lab 5
+          - href: Lab_6.qmd
+            text: Lab 6
+          - href: Lab_7.qmd
+            text: Lab 7
       - href: blog.qmd
         text: Blog
 
