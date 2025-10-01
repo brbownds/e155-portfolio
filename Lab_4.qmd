@@ -82,7 +82,7 @@ $$
 
 If longer note durations are required, we can extend them by looping multiple timer intervals.
 
-#### Oscilliscope Traces of Frequencies
+### Oscilliscope Traces of Frequencies
 ![](Lab4_260freq.png){width=600} 
 
 Figure 2: Oscilloscope capture of a note coded at 262 Hz, measured at 260 Hz. The small difference (≈ 0.76% error) is well within the ±1% accuracy requirement.
