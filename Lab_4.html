@@ -220,8 +220,6 @@ window.Quarto = {
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p><img src=".png" class="img-fluid" width="600"></p>
-<p>Figure 1: Shows the Microprocessor Development Board v.4 with the Upduino FPGA and MCU, along with pushbuttons and switches.</p>
 <p>In this lab, I used the STM32L432KC microcontroller to play music by generating square waves through timer-controlled PWM output. The MCU’s PLL was set to a stable 80 MHz system clock, which was then routed into two timers: <code>TIM15</code> and <code>TIM16</code>. <code>TIM16</code> was used to generate the PWM output that created the pitch of each note, while <code>TIM15</code> was used to generate millisecond-accurate delays that held each note for the correct duration. A GPIO pin (PA6) was set to alternate function (AF14) and then carried the PWM signal to an LM386 audio amplifier, which drove an 8 Ω speaker.</p>
 <p>The lab required the system to play <em>Für Elise</em> using an array of frequency-duration pairs. The design also supported accurate note durations, proper rests, and maintained pitch accuracy within 1% across the 220–1000 Hz range. For excellence, I extended the design to also play the Star Wars theme, <em>The Imperial March</em> and added a potentiometer for volume control.</p>
 </section>
@@ -248,8 +246,7 @@ f_{\text{tick}} = \frac{80{,}000{,}000\ \text{Hz}}{79+1} = 1{,}000{,}000 \ \text
 <section id="schematic" class="level2">
 <h2 class="anchored" data-anchor-id="schematic">Schematic</h2>
 <p><img src="Lab4_schem.png" class="img-fluid" width="600"></p>
-<p>Figure 3: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.</p>
-<p>This shows the physical layout of the design. An internal 1.5 kΩ pull-up resistor was used to ensure the active-low reset pin was not floating. The current running through the diode of the seven segment display (~1 mA) was divided by the Vcc subtracted by the forward voltage of a red LED.</p>
+<p>Figure 1: Schematic of the physical circuit layout of the STM32L432 Board and the LM386N audio amplifier.</p>
 </section>
 <section id="calculations-and-results" class="level2">
 <h2 class="anchored" data-anchor-id="calculations-and-results">Calculations and Results</h2>
@@ -273,19 +270,23 @@ f_{\max} = \frac{f_{\text{tick}}}{ARR_{\min} + 1}
 </section>
 <section id="minimum-duration" class="level3">
 <h3 class="anchored" data-anchor-id="minimum-duration">Minimum Duration</h3>
-<p>The timer’s resolution is one tick: <span class="math display">\[t_{\min} = \frac{1}{f_{\text{tick}}} = 1 \, \mu s.
+<p>The timer’s resolution is one tick: <span class="math display">\[ARR_{\min} = {f_{\text{tick}} \times t_{\min} } = 0 \quad \Rightarrow \quad t_{\min} = 0\text{ms}.
 \]</span> This means we can produce rests or note durations as short as one microsecond, though in practice this is limited by the speed of audible perception.</p>
 </section>
 <section id="maximum-duration" class="level3">
 <h3 class="anchored" data-anchor-id="maximum-duration">Maximum Duration</h3>
-<p>For long delays (rests or note holds), we use TIM15 with the same tick frequency of <span class="math inline">\((1 \, \mu s)\)</span>. The maximum delay is: <span class="math display">\[t_{\max} = (ARR_{\max} + 1) \times \frac{1}{f_{\text{tick}}}
-= 65{,}536 \times 1 \, \mu s \approx 65.5 \, \text{ms}.
+<p>For long delays (rests or note holds), we use TIM15 with the same tick frequency. The maximum delay is when <span class="math inline">\(ARR_{max} = 65535\)</span> : <span class="math display">\[t_{\max} = (ARR_{\max} + 1) \times f_{\text{tick}}
+= 65536 \times 1\ \text{MHz} \approx 0.0655\ \mu\text{s} = 65.5 \, \text{ms}.
 \]</span></p>
 <p>If longer note durations are required, we can extend them by looping multiple timer intervals.</p>
 <section id="oscilliscope-traces-of-frequencies" class="level4">
 <h4 class="anchored" data-anchor-id="oscilliscope-traces-of-frequencies">Oscilliscope Traces of Frequencies</h4>
-<p><img src=".png" class="img-fluid" width="800"></p>
-<p>Figure 6: Screenshot of a oscilliscope waveform validating the exact frequency of 2.41 Hz.</p>
+<p><img src="Lab4_260freq.png" class="img-fluid" width="600"></p>
+<p>Figure 2: Oscilloscope capture of a note coded at 262 Hz, measured at 260 Hz. The small difference (≈ 0.76% error) is well within the ±1% accuracy requirement.</p>
+<p><img src="Lab4_438freq.png" class="img-fluid" width="600"></p>
+<p>Figure 3: Oscilloscope capture of a note coded at 440 Hz, measured at 438 Hz. The frequency deviation (≈ 0.45% error) also satisfies the requirement of less than 1% error.</p>
+<p><img src="Lab4_653freq.png" class="img-fluid" width="600"></p>
+<p>Figure 4: Oscilloscope capture of a note coded at 659 Hz, measured at 653 Hz. The difference (≈ 0.91% error) remains within the ±1% specification.</p>
 </section>
 </section>
 <section id="verifying-of-pitch-accuracy" class="level3">
