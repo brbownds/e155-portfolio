@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Portfolio – Broderick Bownds</title>
+<title>Digital Audio – Broderick Bownds</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -34,6 +34,7 @@ ul.task-list li input[type="checkbox"] {
 <script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
 <link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-37eea08aefeeee20ff55810ff984fec1.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
@@ -67,11 +68,40 @@ ul.task-list li input[type="checkbox"] {
   }
 }</script>
 
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
 
-<body class="nav-fixed fullcontent quarto-light">
+<body class="nav-fixed quarto-light">
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -142,26 +172,147 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#design-and-testing-methodology" id="toc-design-and-testing-methodology" class="nav-link" data-scroll-target="#design-and-testing-methodology">Design and Testing Methodology</a>
+  <ul class="collapse">
+  <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation</a></li>
+  </ul></li>
+  <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
+  <li><a href="#calculations-and-results" id="toc-calculations-and-results" class="nav-link" data-scroll-target="#calculations-and-results">Calculations and Results</a>
+  <ul class="collapse">
+  <li><a href="#minimum-frequency-supported" id="toc-minimum-frequency-supported" class="nav-link" data-scroll-target="#minimum-frequency-supported">Minimum Frequency Supported</a></li>
+  <li><a href="#maximum-frequency-supported" id="toc-maximum-frequency-supported" class="nav-link" data-scroll-target="#maximum-frequency-supported">Maximum Frequency Supported</a></li>
+  <li><a href="#maximum-duration-supported" id="toc-maximum-duration-supported" class="nav-link" data-scroll-target="#maximum-duration-supported">Maximum Duration Supported</a></li>
+  <li><a href="#verifying-of-pitch-accuracy" id="toc-verifying-of-pitch-accuracy" class="nav-link" data-scroll-target="#verifying-of-pitch-accuracy">Verifying of Pitch Accuracy</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#ai-prototype-summary" id="toc-ai-prototype-summary" class="nav-link" data-scroll-target="#ai-prototype-summary">AI Prototype Summary</a></li>
+  </ul>
+</nav>
+    </div>
 <!-- main -->
-<div class="quarto-about-jolla">
-  <img src="photo.png" class="about-image
-  round " style="height: 15em; width: 15em;">
- <header id="title-block-header" class="quarto-title-block default">
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Portfolio</h1>
+<h1 class="title">Digital Audio</h1>
 </div>
+
+
+
 <div class="quarto-title-meta">
+
+    
+  
+    
   </div>
-</header><main class="content" id="quarto-document-content">
-<p>Hello! My name is Broderick Bownds and I am a junior engineering major with a focus of Electrical and Computer Engineering at Harvey Mudd College. I am passionate about designing efficient systems at the intersection of hardware and signal processing. My experience spans FPGA development, system-level design, CAD-based prototyping. Beyond the lab, I am committed to inclusive innovation, such as redesigning neuroimaging caps for textured hair, mentoring youth in 3D design and coding through Project Think, being involved in NSBE, and leading through the Annenberg Leadership Forum.</p>
+  
 
 
-</main>  
-</div>
- <!-- /main -->
+</header>
+
+
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p><img src=".png" class="img-fluid" width="600"></p>
+<p>Figure 1: Shows the Microprocessor Development Board v.4 with the Upduino FPGA and MCU, along with pushbuttons and switches.</p>
+<p>In this lab, I used the STM32L432KC microcontroller to play music by generating square waves through timer-controlled PWM output. The MCU’s PLL was set to a stable 80 MHz system clock, which was then routed into two timers: <code>TIM15</code> and <code>TIM16</code>. <code>TIM16</code> was used to generate the PWM output that created the pitch of each note, while <code>TIM15</code> was used to generate millisecond-accurate delays that held each note for the correct duration. A GPIO pin (PA6) was set to alternate function (AF14) and then carried the PWM signal to an LM386 audio amplifier, which drove an 8 Ω speaker.</p>
+<p>The lab required the system to play <em>Für Elise</em> using an array of frequency-duration pairs. The design also supported accurate note durations, proper rests, and maintained pitch accuracy within 1% across the 220–1000 Hz range. For excellence, I extended the design to also play the Star Wars theme, <em>The Imperial March</em> and added a potentiometer for volume control.</p>
+</section>
+<section id="design-and-testing-methodology" class="level2">
+<h2 class="anchored" data-anchor-id="design-and-testing-methodology">Design and Testing Methodology</h2>
+<p>The design began with carefully reading the STM32L432KC reference manual and datasheet to understand the required registers for the Reset and Clock Control (RCC), General-Purpose I/O (GPIO), and Timers (TIM15, TIM16).</p>
+<p>Clock Setup: The system clock was configured via PLL to 80 MHz while the flash latency was set to 4 wait states to support this speed. RCC was enabled for GPIOA, TIM15, and TIM16.</p>
+<p>GPIO Configuration: Pin PA6 was configured as alternate function mode (AF14) to output TIM16_CH1 PWM.</p>
+<p>Timer Setup: <span class="math display">\[
+\frac{f_{clk}}{(PSC+1)(ARR+1)}
+\]</span></p>
+<p>Although the prescalar (PSC) and auto-reload register (ARR) appear together in this formula, they serve different roles as dividers. The PSC divides the high-speed system clock into a slower “tick” rate. The ARR then specifies how many of those ticks occur before the counter resets to 0. This separation allows flexible tuning while keeping calculations and register values within valid ranges.</p>
+<p>TIM16 (PWM Generator): ARR and CCR1 were calculated by: <span class="math display">\[
+ARR = \frac{f_{clk}}{f_{out}} - 1
+\]</span></p>
+<p>TIM15 (Duration Timer) was used for delays. Here, the PSC was set to PSC = 79, so the timer ticked at 1 MHz (1 µs per tick): <span class="math display">\[
+f_{\text{tick}} = \frac{80{,}000{,}000\ \text{Hz}}{79+1} = 1{,}000{,}000 \ \text{Hz}
+\]</span></p>
+<section id="technical-documentation" class="level3">
+<h3 class="anchored" data-anchor-id="technical-documentation">Technical Documentation</h3>
+<p>The source code for the project can be found in the associated <a href="https://github.com/brbownds/e155-lab4">GitHub repository</a>.</p>
+</section>
+</section>
+<section id="schematic" class="level2">
+<h2 class="anchored" data-anchor-id="schematic">Schematic</h2>
+<p><img src="Lab4_schem.png" class="img-fluid" width="600"></p>
+<p>Figure 3: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.</p>
+<p>This shows the physical layout of the design. An internal 1.5 kΩ pull-up resistor was used to ensure the active-low reset pin was not floating. The current running through the diode of the seven segment display (~1 mA) was divided by the Vcc subtracted by the forward voltage of a red LED.</p>
+</section>
+<section id="calculations-and-results" class="level2">
+<h2 class="anchored" data-anchor-id="calculations-and-results">Calculations and Results</h2>
+<p>To verify the performance of our design, we calculated the ranges of frequencies and durations supported by our timer configuration. With a system clock of 80 MHz and using a prescalar of 79, <span class="math display">\[
+PSC = 79 \quad \Rightarrow \quad f_{\text{tick}} = \frac{80{,}000{,}000}{79+1} = 1{,}000{,}000 \, \text{Hz}
+\]</span> the timer increments every $1 , s$.</p>
+<section id="minimum-frequency-supported" class="level3">
+<h3 class="anchored" data-anchor-id="minimum-frequency-supported">Minimum Frequency Supported</h3>
+<p>The maximum auto-reload value on a 16-bit timer is <span class="math inline">\(ARR_{\max} = 2^{16} - 1 = 65{,}535\)</span> which corresponds to a minimum frequency of <span class="math display">\[
+f_{\min} = \frac{f_{\text{tick}}}{ARR_{\max} + 1}
+= \frac{1{,}000{,}000\ \text{Hz}}{65{,}536} \approx 15.26 \, \text{Hz}.
+\]</span> Thus, our design can reliably produce pitches as low as ~15 Hz.</p>
+</section>
+<section id="maximum-frequency-supported" class="level3">
+<h3 class="anchored" data-anchor-id="maximum-frequency-supported">Maximum Frequency Supported</h3>
+<p>The smallest valid ARR value is 1, which gives: <span class="math display">\[
+f_{\max} = \frac{f_{\text{tick}}}{ARR_{\min} + 1}
+= \frac{1{,}000{,}000}{2} = 500{,}000 \, \text{Hz} = 500\ \text{kHz}.
+\]</span> Therefore, the minimum and maximum frequencies that be played are 15 Hz and 500 kHz. This is far above the audio range, so any audible note (20 Hz – 20 kHz) should be fully captured. ### Minimum Duration Supported The timer’s resolution is one tick: <span class="math display">\[t_{\min} = \frac{1}{f_{\text{tick}}} = 1 \, \mu s.
+\]</span> This means we can produce rests or note durations as short as one microsecond, though in practice this is limited by the speed of audible perception.</p>
+</section>
+<section id="maximum-duration-supported" class="level3">
+<h3 class="anchored" data-anchor-id="maximum-duration-supported">Maximum Duration Supported</h3>
+<p>For long delays (rests or note holds), we use TIM15 with the same tick frequency of <span class="math inline">\((1 \, \mu s)\)</span>. The maximum delay is: <span class="math display">\[t_{\max} = (ARR_{\max} + 1) \times \frac{1}{f_{\text{tick}}}
+= 65{,}536 \times 1 \, \mu s \approx 65.5 \, \text{ms}.
+\]</span></p>
+<p>If longer note durations are required, we can extend them by looping multiple timer intervals.</p>
+<section id="oscilliscope-traces-of-frequencies" class="level4">
+<h4 class="anchored" data-anchor-id="oscilliscope-traces-of-frequencies">Oscilliscope Traces of Frequencies</h4>
+<p><img src=".png" class="img-fluid" width="800"></p>
+<p>Figure 6: Screenshot of a oscilliscope waveform validating the exact frequency of 2.41 Hz.</p>
+</section>
+</section>
+<section id="verifying-of-pitch-accuracy" class="level3">
+<h3 class="anchored" data-anchor-id="verifying-of-pitch-accuracy">Verifying of Pitch Accuracy</h3>
+<p>To calculate and validate pitch accuracy across our range (220 – 1000 Hz) we can first evaulate our ARR value with the desired frequency and then move backwards and plug in a rounded down value of ARR due to the hardware imperfections:</p>
+<p><span class="math inline">\(ARR = \frac{f_{\text{tick}}}{f_{out}} - 1\)</span> So therefore, starting with the lower end of the frequency range at 220 Hz, <span class="math inline">\(ARR = \frac{1\ \text{MHz}}{220\ \text{Hz}} - 1 =4544.\overline{45}\)</span> Now we can utilize this ARR value and say due to imperfections in hardware and/or software we can round down our ARR value to the nearest integer and then plug it in and see what our actual frequency is, <span class="math inline">\({f_\text{des}} = \frac{f_\text{tick}}{ARR + 1} = \frac{1 \text{MHz}}{4545} = 220.022\ \text{Hz}\)</span> Now utilize both the expected and desired frequencies to calculate the percent error, <span class="math inline">\(\frac{220.02\ \text{Hz} - 220\ \text{Hz}}{220\ \text{Hz}} = 0.0001 = 0.01\%\)</span></p>
+<p>Now we can calculate with our higher end frequency of 1000 Hz using the same method: <span class="math inline">\(ARR = \frac{1\ \text{MHz}}{1000\ \text{Hz}} - 1 = 999\)</span> Becuase our ARR value is an integer value, theoretically there should be no percent error due based on previous remarks of rounding down decimal values. So our percent error would be zero <span class="math inline">\({f_\text{des}} = {f_\text{exp}}\quad \Rightarrow \quad = 0\%\)</span></p>
+<p>With these calculations, I demonstrated the timer supports all required note frequencies and durations. The pitch accuracy is at least within <span class="math inline">\(1\%\)</span> across the target range. Rests (when frequency = 0) are correctly implemented by disabling the channel output.</p>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This lab demonstrated how to use the STM32L432KC microcontroller to generate music through timers, PWM, and GPIO. The design successfully played Für Elise at the correct tempo and pitch accuracy, with proper rests. For extension, the design also played the Star Wars theme, and a potentiometer was added for volume control. Frequency accuracy were in range of 1%. I spent approximately <strong>17</strong> hours completing this lab, including datasheet reading, code debugging, and oscilloscope testing.</p>
+<p><a href="https://youtu.be/5WauKLr9_yU">Watch the demo!</a></p>
+</section>
+<section id="ai-prototype-summary" class="level2">
+<h2 class="anchored" data-anchor-id="ai-prototype-summary">AI Prototype Summary</h2>
+<p>When I used ChatGPT to help me code for the STM32L432, I found the output surprisingly effective. The explanations were written in a way that pulled together both the math (timer frequency formulas) and the hardware setup steps (registers, GPIO alternate functions). In some cases, this was faster and clearer than digging through the reference manual on my own, since the manual is dense and not always organized around the specific use case I had in mind. For instance, the LLM explained the relation between <code>PSC</code>, <code>ARR</code>, and the timer input clock in one concise formula, something I would have had to piece together across multiple sections of the manual. This is once I uploaded the manual as reference.</p>
+<p>For timers, it provided a full recipe with both math and register workflow. So I’d rate it more useful as a teacher than as a pure document search engine.</p>
+
+
+</section>
+
+</main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
     const isCodeAnnotation = (el) => {
       for (const clz of el.classList) {
         if (clz.startsWith('code-annotation-')) {                     
