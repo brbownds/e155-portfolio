@@ -185,9 +185,10 @@ window.Quarto = {
   <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
   <li><a href="#calculations-and-results" id="toc-calculations-and-results" class="nav-link" data-scroll-target="#calculations-and-results">Calculations and Results</a>
   <ul class="collapse">
-  <li><a href="#minimum-frequency-supported" id="toc-minimum-frequency-supported" class="nav-link" data-scroll-target="#minimum-frequency-supported">Minimum Frequency Supported</a></li>
-  <li><a href="#maximum-frequency-supported" id="toc-maximum-frequency-supported" class="nav-link" data-scroll-target="#maximum-frequency-supported">Maximum Frequency Supported</a></li>
-  <li><a href="#maximum-duration-supported" id="toc-maximum-duration-supported" class="nav-link" data-scroll-target="#maximum-duration-supported">Maximum Duration Supported</a></li>
+  <li><a href="#minimum-frequency" id="toc-minimum-frequency" class="nav-link" data-scroll-target="#minimum-frequency">Minimum Frequency</a></li>
+  <li><a href="#maximum-frequency" id="toc-maximum-frequency" class="nav-link" data-scroll-target="#maximum-frequency">Maximum Frequency</a></li>
+  <li><a href="#minimum-duration" id="toc-minimum-duration" class="nav-link" data-scroll-target="#minimum-duration">Minimum Duration</a></li>
+  <li><a href="#maximum-duration" id="toc-maximum-duration" class="nav-link" data-scroll-target="#maximum-duration">Maximum Duration</a></li>
   <li><a href="#verifying-of-pitch-accuracy" id="toc-verifying-of-pitch-accuracy" class="nav-link" data-scroll-target="#verifying-of-pitch-accuracy">Verifying of Pitch Accuracy</a></li>
   </ul></li>
   <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
@@ -255,23 +256,28 @@ f_{\text{tick}} = \frac{80{,}000{,}000\ \text{Hz}}{79+1} = 1{,}000{,}000 \ \text
 <p>To verify the performance of our design, we calculated the ranges of frequencies and durations supported by our timer configuration. With a system clock of 80 MHz and using a prescalar of 79, <span class="math display">\[
 PSC = 79 \quad \Rightarrow \quad f_{\text{tick}} = \frac{80{,}000{,}000}{79+1} = 1{,}000{,}000 \, \text{Hz}
 \]</span> the timer increments every $1 , s$.</p>
-<section id="minimum-frequency-supported" class="level3">
-<h3 class="anchored" data-anchor-id="minimum-frequency-supported">Minimum Frequency Supported</h3>
+<section id="minimum-frequency" class="level3">
+<h3 class="anchored" data-anchor-id="minimum-frequency">Minimum Frequency</h3>
 <p>The maximum auto-reload value on a 16-bit timer is <span class="math inline">\(ARR_{\max} = 2^{16} - 1 = 65{,}535\)</span> which corresponds to a minimum frequency of <span class="math display">\[
 f_{\min} = \frac{f_{\text{tick}}}{ARR_{\max} + 1}
 = \frac{1{,}000{,}000\ \text{Hz}}{65{,}536} \approx 15.26 \, \text{Hz}.
 \]</span> Thus, our design can reliably produce pitches as low as ~15 Hz.</p>
 </section>
-<section id="maximum-frequency-supported" class="level3">
-<h3 class="anchored" data-anchor-id="maximum-frequency-supported">Maximum Frequency Supported</h3>
+<section id="maximum-frequency" class="level3">
+<h3 class="anchored" data-anchor-id="maximum-frequency">Maximum Frequency</h3>
 <p>The smallest valid ARR value is 1, which gives: <span class="math display">\[
 f_{\max} = \frac{f_{\text{tick}}}{ARR_{\min} + 1}
 = \frac{1{,}000{,}000}{2} = 500{,}000 \, \text{Hz} = 500\ \text{kHz}.
-\]</span> Therefore, the minimum and maximum frequencies that be played are 15 Hz and 500 kHz. This is far above the audio range, so any audible note (20 Hz – 20 kHz) should be fully captured. ### Minimum Duration Supported The timer’s resolution is one tick: <span class="math display">\[t_{\min} = \frac{1}{f_{\text{tick}}} = 1 \, \mu s.
+\]</span></p>
+<p>Therefore, the minimum and maximum frequencies that be played are 15 Hz and 500 kHz. This is far above the audio range, so any audible note (20 Hz – 20 kHz) should be fully captured.</p>
+</section>
+<section id="minimum-duration" class="level3">
+<h3 class="anchored" data-anchor-id="minimum-duration">Minimum Duration</h3>
+<p>The timer’s resolution is one tick: <span class="math display">\[t_{\min} = \frac{1}{f_{\text{tick}}} = 1 \, \mu s.
 \]</span> This means we can produce rests or note durations as short as one microsecond, though in practice this is limited by the speed of audible perception.</p>
 </section>
-<section id="maximum-duration-supported" class="level3">
-<h3 class="anchored" data-anchor-id="maximum-duration-supported">Maximum Duration Supported</h3>
+<section id="maximum-duration" class="level3">
+<h3 class="anchored" data-anchor-id="maximum-duration">Maximum Duration</h3>
 <p>For long delays (rests or note holds), we use TIM15 with the same tick frequency of <span class="math inline">\((1 \, \mu s)\)</span>. The maximum delay is: <span class="math display">\[t_{\max} = (ARR_{\max} + 1) \times \frac{1}{f_{\text{tick}}}
 = 65{,}536 \times 1 \, \mu s \approx 65.5 \, \text{ms}.
 \]</span></p>
