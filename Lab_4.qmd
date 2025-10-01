@@ -55,7 +55,7 @@ PSC = 79 \quad \Rightarrow \quad f_{\text{tick}} = \frac{80{,}000{,}000}{79+1} =
 $$
 the timer increments every $1 \, \mu s\$.
 
-### Minimum Frequency Supported
+### Minimum Frequency
 The maximum auto-reload value on a 16-bit timer is
 $ARR_{\max} = 2^{16} - 1 = 65{,}535$
 which corresponds to a minimum frequency of
@@ -65,20 +65,22 @@ f_{\min} = \frac{f_{\text{tick}}}{ARR_{\max} + 1}
 $$
 Thus, our design can reliably produce pitches as low as ~15 Hz.
 
-### Maximum Frequency Supported
+### Maximum Frequency
 The smallest valid ARR value is 1, which gives:
 $$
 f_{\max} = \frac{f_{\text{tick}}}{ARR_{\min} + 1} 
 = \frac{1{,}000{,}000}{2} = 500{,}000 \, \text{Hz} = 500\ \text{kHz}.
 $$
+
 Therefore, the minimum and maximum frequencies that be played are 15 Hz and 500 kHz. This is far above the audio range, so any audible note (20 Hz – 20 kHz) should be fully captured.
-### Minimum Duration Supported
+
+### Minimum Duration
 The timer’s resolution is one tick:
 $$t_{\min} = \frac{1}{f_{\text{tick}}} = 1 \, \mu s.
 $$
 This means we can produce rests or note durations as short as one microsecond, though in practice this is limited by the speed of audible perception.
 
-### Maximum Duration Supported
+### Maximum Duration
 For long delays (rests or note holds), we use TIM15 with the same tick frequency of $(1 \, \mu s)$. The maximum delay is:
 $$t_{\max} = (ARR_{\max} + 1) \times \frac{1}{f_{\text{tick}}} 
 = 65{,}536 \times 1 \, \mu s \approx 65.5 \, \text{ms}.
