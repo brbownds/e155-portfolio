@@ -93,19 +93,33 @@ Figure 6: Screenshot of a oscilliscope waveform validating the exact frequency o
 
 ### Verifying of Pitch Accuracy
 To calculate and validate pitch accuracy across our range (220 -- 1000 Hz) we can first evaulate our ARR value with the desired frequency and then move backwards and plug in a rounded down value of ARR due to the hardware imperfections: 
+$$ARR = \frac{f_{\text{tick}}}{f_{out}} - 1
+$$
 
-$ARR = \frac{f_{\text{tick}}}{f_{out}} - 1$
 So therefore, starting with the lower end of the frequency range at 220 Hz,
-$ARR = \frac{1\ \text{MHz}}{220\ \text{Hz}} - 1 =4544.\overline{45}$
+$$
+ARR = \frac{1\ \text{MHz}}{220\ \text{Hz}} - 1 =4544.\overline{45}
+$$
+
 Now we can utilize this ARR value and say due to imperfections in hardware and/or software we can round down our ARR value to the nearest integer and then plug it in and see what our actual frequency is, 
-${f_\text{des}} = \frac{f_\text{tick}}{ARR + 1} = \frac{1 \text{MHz}}{4545} = 220.022\ \text{Hz}$
+$$
+{f_\text{des}} = \frac{f_\text{tick}}{ARR + 1} = \frac{1 \text{MHz}}{4545} = 220.022\ \text{Hz}
+$$
+
 Now utilize both the expected and desired frequencies to calculate the percent error,
-$\frac{220.02\ \text{Hz} - 220\ \text{Hz}}{220\ \text{Hz}} = 0.0001 = 0.01\%$
+$$
+\frac{220.022\ \text{Hz} - 220\ \text{Hz}}{220\ \text{Hz}} = 0.0001 = 0.01\%
+$$
 
 Now we can calculate with our higher end frequency of 1000 Hz using the same method:
-$ARR = \frac{1\ \text{MHz}}{1000\ \text{Hz}} - 1 = 999$
+$$
+ARR = \frac{1\ \text{MHz}}{1000\ \text{Hz}} - 1 = 999
+$$
+
 Becuase our ARR value is an integer value, theoretically there should be no percent error due based on previous remarks of rounding down decimal values. So our percent error would be zero 
-${f_\text{des}} = {f_\text{exp}}\quad \Rightarrow \quad = 0\%$
+$$
+{f_\text{des}} = {f_\text{exp}}\quad \Rightarrow \quad = 0\%
+$$
 
 With these calculations, I demonstrated the timer supports all required note frequencies and durations. The pitch accuracy is at least within $1\%$ across the target range. Rests (when frequency = 0) are correctly implemented by disabling the channel output.
 
