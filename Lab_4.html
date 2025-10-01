@@ -284,9 +284,23 @@ f_{\max} = \frac{f_{\text{tick}}}{ARR_{\min} + 1}
 </section>
 <section id="verifying-of-pitch-accuracy" class="level3">
 <h3 class="anchored" data-anchor-id="verifying-of-pitch-accuracy">Verifying of Pitch Accuracy</h3>
-<p>To calculate and validate pitch accuracy across our range (220 – 1000 Hz) we can first evaulate our ARR value with the desired frequency and then move backwards and plug in a rounded down value of ARR due to the hardware imperfections:</p>
-<p><span class="math inline">\(ARR = \frac{f_{\text{tick}}}{f_{out}} - 1\)</span> So therefore, starting with the lower end of the frequency range at 220 Hz, <span class="math inline">\(ARR = \frac{1\ \text{MHz}}{220\ \text{Hz}} - 1 =4544.\overline{45}\)</span> Now we can utilize this ARR value and say due to imperfections in hardware and/or software we can round down our ARR value to the nearest integer and then plug it in and see what our actual frequency is, <span class="math inline">\({f_\text{des}} = \frac{f_\text{tick}}{ARR + 1} = \frac{1 \text{MHz}}{4545} = 220.022\ \text{Hz}\)</span> Now utilize both the expected and desired frequencies to calculate the percent error, <span class="math inline">\(\frac{220.02\ \text{Hz} - 220\ \text{Hz}}{220\ \text{Hz}} = 0.0001 = 0.01\%\)</span></p>
-<p>Now we can calculate with our higher end frequency of 1000 Hz using the same method: <span class="math inline">\(ARR = \frac{1\ \text{MHz}}{1000\ \text{Hz}} - 1 = 999\)</span> Becuase our ARR value is an integer value, theoretically there should be no percent error due based on previous remarks of rounding down decimal values. So our percent error would be zero <span class="math inline">\({f_\text{des}} = {f_\text{exp}}\quad \Rightarrow \quad = 0\%\)</span></p>
+<p>To calculate and validate pitch accuracy across our range (220 – 1000 Hz) we can first evaulate our ARR value with the desired frequency and then move backwards and plug in a rounded down value of ARR due to the hardware imperfections: <span class="math display">\[ARR = \frac{f_{\text{tick}}}{f_{out}} - 1
+\]</span></p>
+<p>So therefore, starting with the lower end of the frequency range at 220 Hz, <span class="math display">\[
+ARR = \frac{1\ \text{MHz}}{220\ \text{Hz}} - 1 =4544.\overline{45}
+\]</span></p>
+<p>Now we can utilize this ARR value and say due to imperfections in hardware and/or software we can round down our ARR value to the nearest integer and then plug it in and see what our actual frequency is, <span class="math display">\[
+{f_\text{des}} = \frac{f_\text{tick}}{ARR + 1} = \frac{1 \text{MHz}}{4545} = 220.022\ \text{Hz}
+\]</span></p>
+<p>Now utilize both the expected and desired frequencies to calculate the percent error, <span class="math display">\[
+\frac{220.022\ \text{Hz} - 220\ \text{Hz}}{220\ \text{Hz}} = 0.0001 = 0.01\%
+\]</span></p>
+<p>Now we can calculate with our higher end frequency of 1000 Hz using the same method: <span class="math display">\[
+ARR = \frac{1\ \text{MHz}}{1000\ \text{Hz}} - 1 = 999
+\]</span></p>
+<p>Becuase our ARR value is an integer value, theoretically there should be no percent error due based on previous remarks of rounding down decimal values. So our percent error would be zero <span class="math display">\[
+{f_\text{des}} = {f_\text{exp}}\quad \Rightarrow \quad = 0\%
+\]</span></p>
 <p>With these calculations, I demonstrated the timer supports all required note frequencies and durations. The pitch accuracy is at least within <span class="math inline">\(1\%\)</span> across the target range. Rests (when frequency = 0) are correctly implemented by disabling the channel output.</p>
 </section>
 </section>
