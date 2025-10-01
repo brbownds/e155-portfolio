@@ -3,10 +3,6 @@ title: "Digital Audio"
 ---
 
 ## Introduction
-![](){width=600}
-
-Figure 1: Shows the Microprocessor Development Board v.4 with the Upduino FPGA and MCU, along with pushbuttons and switches.
-
 In this lab, I used the STM32L432KC microcontroller to play music by generating square waves through timer-controlled PWM output. The MCU’s PLL was set to a stable 80 MHz system clock, which was then routed into two timers: `TIM15` and `TIM16`. `TIM16` was used to generate the PWM output that created the pitch of each note, while `TIM15` was used to generate millisecond-accurate delays that held each note for the correct duration. A GPIO pin (PA6) was set to alternate function (AF14) and then carried the PWM signal to an LM386 audio amplifier, which drove an 8 Ω speaker.
 
 The lab required the system to play *Für Elise* using an array of frequency-duration pairs. The design also supported accurate note durations, proper rests, and maintained pitch accuracy within 1% across the 220–1000 Hz range. For excellence, I extended the design to also play the Star Wars theme, *The Imperial March* and added a potentiometer for volume control.
@@ -44,9 +40,7 @@ The source code for the project can be found in the associated [GitHub repositor
 ## Schematic
 ![](Lab4_schem.png){width=600}
 
-Figure 3: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.
-
-This shows the physical layout of the design. An internal 1.5 kΩ pull-up resistor was used to ensure the active-low reset pin was not floating. The current running through the diode of the seven segment display (~1 mA) was divided by the Vcc subtracted by the forward voltage of a red LED.
+Figure 1: Schematic of the physical circuit layout of the STM32L432 Board and the LM386N audio amplifier.
 
 ## Calculations and Results
 To verify the performance of our design, we calculated the ranges of frequencies and durations supported by our timer configuration. With a system clock of 80 MHz and using a prescalar of 79,
@@ -76,22 +70,30 @@ Therefore, the minimum and maximum frequencies that be played are 15 Hz and 500 
 
 ### Minimum Duration
 The timer’s resolution is one tick:
-$$t_{\min} = \frac{1}{f_{\text{tick}}} = 1 \, \mu s.
+$$ARR_{\min} = {f_{\text{tick}} \times t_{\min} } = 0 \quad \Rightarrow \quad t_{\min} = 0\text{ms}.
 $$
 This means we can produce rests or note durations as short as one microsecond, though in practice this is limited by the speed of audible perception.
 
 ### Maximum Duration
-For long delays (rests or note holds), we use TIM15 with the same tick frequency of $(1 \, \mu s)$. The maximum delay is:
-$$t_{\max} = (ARR_{\max} + 1) \times \frac{1}{f_{\text{tick}}} 
-= 65{,}536 \times 1 \, \mu s \approx 65.5 \, \text{ms}.
+For long delays (rests or note holds), we use TIM15 with the same tick frequency. The maximum delay is when $ARR_{max} = 65535$ :
+$$t_{\max} = (ARR_{\max} + 1) \times f_{\text{tick}}
+= 65536 \times 1\ \text{MHz} \approx 0.0655\ \mu\text{s} = 65.5 \, \text{ms}.
 $$
 
 If longer note durations are required, we can extend them by looping multiple timer intervals.
 
 #### Oscilliscope Traces of Frequencies
-![](.png){width=800} 
+![](Lab4_260freq.png){width=600} 
 
-Figure 6: Screenshot of a oscilliscope waveform validating the exact frequency of 2.41 Hz. 
+Figure 2: Oscilloscope capture of a note coded at 262 Hz, measured at 260 Hz. The small difference (≈ 0.76% error) is well within the ±1% accuracy requirement.
+
+![](Lab4_438freq.png){width=600} 
+
+Figure 3: Oscilloscope capture of a note coded at 440 Hz, measured at 438 Hz. The frequency deviation (≈ 0.45% error) also satisfies the requirement of less than 1% error.
+
+![](Lab4_653freq.png){width=600} 
+
+Figure 4: Oscilloscope capture of a note coded at 659 Hz, measured at 653 Hz. The difference (≈ 0.91% error) remains within the ±1% specification.
 
 ### Verifying of Pitch Accuracy
 To calculate and validate pitch accuracy across our range (220 -- 1000 Hz) we can first evaulate our ARR value with the desired frequency and then move backwards and plug in a rounded down value of ARR due to the hardware imperfections: 
