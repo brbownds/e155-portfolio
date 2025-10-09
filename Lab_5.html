@@ -119,7 +119,7 @@ window.Quarto = {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./resources.html"> 
+    <a class="nav-link" href="./resources.qmd"> 
 <span class="menu-text">Resources</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -128,11 +128,11 @@ window.Quarto = {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-e155-labs">    
         <li>
-    <a class="dropdown-item" href="./Lab_1.html">
+    <a class="dropdown-item" href="./Lab_1.qmd">
  <span class="dropdown-text">Lab 1</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Lab_2.html">
+    <a class="dropdown-item" href="./Lab_2.qmd">
  <span class="dropdown-text">Lab 2</span></a>
   </li>  
         <li>
@@ -140,7 +140,7 @@ window.Quarto = {
  <span class="dropdown-text">Lab 3</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./Lab_4.html">
+    <a class="dropdown-item" href="./Lab_4.qmd">
  <span class="dropdown-text">Lab 4</span></a>
   </li>  
         <li>
@@ -158,7 +158,7 @@ window.Quarto = {
     </ul>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="./blog.html"> 
+    <a class="nav-link" href="./blog.qmd"> 
 <span class="menu-text">Blog</span></a>
   </li>  
 </ul>
@@ -178,7 +178,11 @@ window.Quarto = {
    
   <ul>
   <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#design-and-testing-methodology" id="toc-design-and-testing-methodology" class="nav-link" data-scroll-target="#design-and-testing-methodology">Design and Testing Methodology</a></li>
+  <li><a href="#design-and-testing-methodology" id="toc-design-and-testing-methodology" class="nav-link" data-scroll-target="#design-and-testing-methodology">Design and Testing Methodology</a>
+  <ul class="collapse">
+  <li><a href="#calculating-speed" id="toc-calculating-speed" class="nav-link" data-scroll-target="#calculating-speed">Calculating Speed</a></li>
+  <li><a href="#rotational-direction-logic" id="toc-rotational-direction-logic" class="nav-link" data-scroll-target="#rotational-direction-logic">Rotational Direction Logic</a></li>
+  </ul></li>
   <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation</a>
   <ul class="collapse">
   <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
@@ -215,11 +219,15 @@ window.Quarto = {
 
 <section id="introduction" class="level2">
 <h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<p>In this lab, the STM32L432KC microcontroller was used to measure the angular speed and direction of a DC motor by interfacing with a quadrature encoder through hardware interrupts. Two 5 V-tolerant pins (<code>PA6</code> and <code>PA8</code>) captured the encoder’s 90° out-of-phase signals, and the MCU was configured to trigger interrupts on both rising and falling edges to achieve full resolution. Each interrupt updated a counter that was used to calculate motor speed in revolutions per second (rev/s) and determine rotational direction, which were displayed on the Segger Studio terminal at a rate of 1Hz. To ensure interrupts were advantageous, a simple polling routine was also added so that interrupt and polling responses could be directly compared on the oscilloscope. Overall, this lab demonstrated how interrupts provide accurate, real-time measurement of high-speed encoder signals.</p>
+<p>In this lab, the STM32L432KC microcontroller was used to measure the angular speed and direction of a DC motor by interfacing with a quadrature encoder through hardware interrupts. A quadature encoder is a rotary encoder that produces two-square wave outputs (usually Channel A and Channel B) which are 90° out of phase with each other. Two 5 V-tolerant pins (<code>PA6</code> and <code>PA8</code>) captured the encoder’s 90° out-of-phase signals, and the MCU was configured to trigger interrupts on both rising and falling edges to achieve full resolution. Each interrupt updated a counter that was used to calculate motor speed in revolutions per second (rev/s) and determine rotational direction, which were displayed on the Segger Studio terminal at a rate of 1Hz. A timer <code>TIM2</code> provided consistent 1 Hz updates for velocity calculation and display.</p>
 </section>
 <section id="design-and-testing-methodology" class="level2">
 <h2 class="anchored" data-anchor-id="design-and-testing-methodology">Design and Testing Methodology</h2>
-<p>To implement the design, <code>ENCODER_A</code> and <code>ENCODER_B</code> were connected to pins <code>PA6</code> and <code>PA8</code>, both configured as digital inputs with internal pull-downs to ensure clean signal transitions. The external interrupt (EXTI) peripheral was set to trigger on both rising and falling edges, enabling x4 edge detection for speed and direction measurement. <code>TIM2</code> provided consistent 1 Hz updates for velocity calculation and display. To validate system performance, two GPIO pins were toggled—one in the main loop (polling) and one inside the interrupt handler. This allowed the oscilloscope comparison of their response times. In the later section, I can confirm that interrupts captured every encoder edge while polling missed several transitions, especially at higher speeds.</p>
+<p>To implement the design, <code>ENCODER_A</code> and <code>ENCODER_B</code> were connected to pins <code>PA6</code> and <code>PA8</code>, both configured as digital inputs with internal pull-downs to ensure clean signal transitions. The external interrupt (EXTI) peripheral was set to trigger on both rising and falling edges, enabling x4 edge detection for speed and direction measurement.</p>
+<p>To validate system performance, two more GPIO pins were toggled—one in the main loop (polling) (<code>PA4</code>) and one inside the interrupt handler (<code>PA5</code>). This allowed the oscilloscope comparison of their response times. In the later section, I can confirm that interrupts captured every encoder edge while polling missed several transitions, especially at higher speeds.</p>
+<p>Overall, this lab demonstrated how interrupts provide accurate, real-time measurement of high-speed encoder signals. The setup for calculating speed and determining roational direction is shown below.</p>
+<section id="calculating-speed" class="level3">
+<h3 class="anchored" data-anchor-id="calculating-speed">Calculating Speed</h3>
 <p>In calculating the velocity we can convene to the <a href="https://grabcad.com/library/geared-dc-motor-with-encoder-ts-25ga370h-1">TS-25GA370 Datasheet</a> and see that at 12V, the pulses per revolution (PPR) at 408 meaning each full turn of the motor shaft produces 408 complete sqaure-waves cycles on Channel A (and Channel B).</p>
 <p>Each pulse two two channels and two edges per channel (rising and falling), so there are four detectable rising and falling edges per pulse: <span class="math display">\[
 \text{edges per rev} = \text{PPR} \times\ 4 = 408 \times\ 4 = 1632
@@ -232,37 +240,114 @@ window.Quarto = {
 \]</span></p>
 <p>Therefore, the calculated speed of the motor should about 2.5 rev/s at 12V.</p>
 </section>
+<section id="rotational-direction-logic" class="level3">
+<h3 class="anchored" data-anchor-id="rotational-direction-logic">Rotational Direction Logic</h3>
+<p>As previously stated, Channel A and Channel B are 90° out of phase. So as the motor shaft rotates, A and B take turns rising and falling. A table is shown how we determine clockwise and counter-clockwise rotation:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Channel A</th>
+<th style="text-align: center;">Channel B</th>
+<th style="text-align: center;">Rotation (CW)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">start</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">A rises first (CW)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">B rises next (CWW)</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">A falls (CW)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">B falls - back to start</td>
+</tr>
+</tbody>
+</table>
+<p>If motor spins clockwise A leads B and if counter-clockwise, B leads A.</p>
+</section>
+</section>
 <section id="technical-documentation" class="level2">
 <h2 class="anchored" data-anchor-id="technical-documentation">Technical Documentation</h2>
 <p>The source code for the project can be found in the associated <a href="https://github.com/%20brbownds/e155-lab5">GitHub repository</a>.</p>
 <section id="schematic" class="level3">
 <h3 class="anchored" data-anchor-id="schematic">Schematic</h3>
-<p><img src="Lab5_sche.png" height="500"></p>
-<p>Figure 1: Schematic of the physical circuit layout of the STM32L432 MCU Board and the 25GA-370 DC Motor.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Lab5_sche.png" height="500" class="figure-img"></p>
+<figcaption>Figure 1: Schematic of the physical circuit layout of the STM32L432 MCU Board and the 25GA-370 DC Motor</figcaption>
+</figure>
+</div>
 </section>
 <section id="flowchart" class="level3">
 <h3 class="anchored" data-anchor-id="flowchart">Flowchart</h3>
-<p><img src="Lab5_fc.png" class="img-fluid" width="700"></p>
-<p>Figure 2: Flowchart of softward code</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Lab5_fc.png" class="img-fluid figure-img" width="700"></p>
+<figcaption>Figure 2: Flowchart of the interrupt-driven encoder system illustrating the code</figcaption>
+</figure>
+</div>
 </section>
 </section>
 <section id="verifying-correct-motor-speeds" class="level2">
 <h2 class="anchored" data-anchor-id="verifying-correct-motor-speeds">Verifying Correct Motor Speeds</h2>
+<p>In verifying the DC motor speed we can take a oscilloscope trace of the measured the motor signal and check this against the calculated value from the motor’s datasheet.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="verifying_speed.png" class="img-fluid figure-img" width="500"></p>
+<figcaption>Figure 3: Oscilloscope trace of the DC Motor at 12V</figcaption>
+</figure>
+</div>
+<p>As shown in Figure 3, the output period signal and can be used to back-calculate to find the measured DC motor speed: <span class="math display">\[
+T_{pulse} = 864.0\ \mu s\quad \Rightarrow \quad \frac{\text{1 pulse}}{T_{pulse}} = 1157.40\ \frac{\text{pulses}}{\text{sec}}
+\]</span> <span class="math display">\[
+\frac{1157.41\ \frac{\text{pulses}}{\text{sec}}}{408 \frac{\text{pulses}}{\text{rev}}} = 2.837\ \text{rev/s}
+\]</span></p>
+<p>From the calculated we can cross-reference with our actual values:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="speed_12v.png" class="img-fluid figure-img"></p>
+<figcaption>Figure 4: Speed values from DC motor displayed from Segger Studio terminal from main.c code</figcaption>
+</figure>
+</div>
+<p>Therefore the speed error from the code and the measured oscilloscope is negilible. However the deviation speed from the datasheet and the measured are more significant possibly due to the motor speed itself fluctuating and not rotating at the same frequency.</p>
 </section>
 <section id="polling-vs.-interrupts" class="level2">
 <h2 class="anchored" data-anchor-id="polling-vs.-interrupts">Polling vs.&nbsp;Interrupts</h2>
-<p><img src=".png" class="img-fluid" width="600"></p>
-<p>Figure 2: Oscilloscope capture of a note coded at 262 Hz, measured at 260 Hz. The small difference (≈ 0.76% error) is well within the ±1% accuracy requirement.</p>
-<p><img src=".png" class="img-fluid" width="600"></p>
-<p>Figure 3: Oscilloscope capture of a note coded at 440 Hz, measured at 438 Hz. The frequency deviation (≈ 0.45% error) also satisfies the requirement of less than 1% error.</p>
-<p><img src="Labfreq.png" class="img-fluid" width="600"></p>
+<p>In this section, it is shown that interrupts outperform polling when sampling at high speeds. To begin, polling means the CPU perodically checks if an input has changed. This check rate depends on the main loop speed and its delays. For example, if an encoder pulses between checks, it’ll miss it. Interrupts are event driven because the hardware triggers the MCU instantly when a change occurs. It pauses the CPU (main loop) to service the event. In simple terms interrupts detect every edge even at high frequency.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="poll_int_FINAL.png" class="img-fluid figure-img" width="600"></p>
+<figcaption>Figure 5: Oscilloscope traces of the differences in polling and interrupts and how it captures the encoder signal. Yellow = <code>ENCODER</code>, Blue = <code>INTERRUPT</code>, Pink = <code>POLLING</code></figcaption>
+</figure>
+</div>
+<p>Now this can be connected to the Nyquist-Shannon sampling theorem that says to accurately reconstruct a signal, you sample at twice its maximum frequency to also avoid aliasing and folding: <span class="math display">\[
+f_{s} &gt; 2f_{max}
+\]</span> For polling, as shown in the figure, the sampling frequency equals how often the loop reads the input. We clearly we that the encoder (yellow) produces a ~2 kHz and the polling pulse (pink) runs at 110 Hz, this is clearly below the Nyquist rate and therefore aliasing the rising/falling edges. The interrupt (blue) triggers at the signal’s edges themselves so Nyquist is never violated and there is no loss of data.</p>
 </section>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
-<p><a href="https://youtu.be/5WauKLr9_yU">Watch the demo!</a></p>
+<p>In this lab, I successfully used the STM32L432KC MCU to measure a motor’s angular velocity and direction using a quadrature encoder with hardware interrupts. By triggering on both edges of the A and B signals, the system achieved full resolution and calculated speed in rev per second. Comparing oscilloscope readings with code output confirmed that the interrupt-based approach captured every encoder edge, while polling missed transitions due to undersampling. Overall, this lab demonstrated how interrupts enable precise, real-time signal processing and reliable velocity measurement for high-speed systems. I spent approximately <strong>19 hours</strong> completing this lab, including datasheet reading, code debugging, and oscilloscope testing.</p>
+<p><a href="https://youtube.com/shorts/d666eBnLSUc?si=ksXfy5iVamBkysoR">Watch the demo!</a></p>
 </section>
 <section id="ai-prototype-summary" class="level2">
 <h2 class="anchored" data-anchor-id="ai-prototype-summary">AI Prototype Summary</h2>
+<p>Copilot helped me interface a quadrature encoder with the STM32L432KC and was a not-so-surprsing surprising experience. I asked for interrupt-based decoding, and Copilot immediately suggested using EXTI lines mapped to PA0 and PA1—pins that are straightforward to configure and well-supported by the STM32. The explanation was concise but thorough, walking through both the hardware setup and the software interrupt handlers. I appreciated how it didn’t just spit out code, but explained the reasoning behind the design choices, like why rising/falling edge detection is useful and how to interpret the encoder phase relationship.</p>
 
 
 </section>
@@ -340,7 +425,7 @@ window.Quarto = {
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/brbownds\.github\.io\/e155-portfolio\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
