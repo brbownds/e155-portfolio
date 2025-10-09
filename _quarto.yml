@@ -9,19 +9,19 @@ website:
         text: Resources
       - text: E155 Labs
         menu:
-          - href: Lab_1.qmd
+          - href: lab1/Lab_1.qmd
             text: Lab 1
-          - href: Lab_2.qmd
+          - href: lab 2/Lab_2.qmd
             text: Lab 2
-          - href: Lab_3.qmd
+          - href: lab 3/Lab_3.qmd
             text: Lab 3
-          - href: Lab_4.qmd
+          - href: lab 4/Lab_4.qmd
             text: Lab 4
-          - href: Lab_5.qmd
+          - href: lab 5/Lab_5.qmd
             text: Lab 5
-          - href: Lab_6.qmd
+          - href: lab 6/Lab_6.qmd
             text: Lab 6
-          - href: Lab_7.qmd
+          - href: lab 7/Lab_7.qmd
             text: Lab 7
       - href: blog.qmd
         text: Blog
