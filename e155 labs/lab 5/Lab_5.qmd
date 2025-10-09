@@ -1,0 +1,56 @@
+---
+title: "Interrupts"
+---
+
+## Introduction
+In this lab, the STM32L432KC microcontroller was used to measure the angular speed and direction of a DC motor by interfacing with a quadrature encoder through hardware interrupts. Two 5 V-tolerant pins (`PA6` and `PA8`) captured the encoder’s 90° out-of-phase signals, and the MCU was configured to trigger interrupts on both rising and falling edges to achieve full resolution. Each interrupt updated a counter that was used to calculate motor speed in revolutions per second (rev/s) and determine rotational direction, which were displayed on the Segger Studio terminal at a rate of 1Hz. To ensure interrupts were advantageous, a simple polling routine was also added so that interrupt and polling responses could be directly compared on the oscilloscope. Overall, this lab demonstrated how interrupts provide accurate, real-time measurement of high-speed encoder signals.
+
+## Design and Testing Methodology
+To implement the design, `ENCODER_A` and `ENCODER_B` were connected to pins `PA6` and `PA8`, both configured as digital inputs with internal pull-downs to ensure clean signal transitions. The external interrupt (EXTI) peripheral was set to trigger on both rising and falling edges, enabling x4 edge detection for speed and direction measurement. `TIM2` provided consistent 1 Hz updates for velocity calculation and display. To validate system performance, two GPIO pins were toggled—one in the main loop (polling) and one inside the interrupt handler. This allowed the oscilloscope comparison of their response times. In the later section, I can confirm that interrupts captured every encoder edge while polling missed several transitions, especially at higher speeds.
+
+In calculating the velocity we can convene to the [TS-25GA370 Datasheet](https://grabcad.com/library/geared-dc-motor-with-encoder-ts-25ga370h-1) and see that at 12V, the pulses per revolution (PPR) at 408 meaning each full turn of the motor shaft produces 408 complete sqaure-waves cycles on Channel A (and Channel B). 
+
+Each pulse two two channels and two edges per channel (rising and falling), so there are four detectable rising and falling edges per pulse:
+$$
+\text{edges per rev} = \text{PPR} \times\ 4 = 408 \times\ 4 = 1632
+$$
+
+The interrupt then detects on every edge of both A and B. Therefore, if the code counts all edges for one seconds, the raw counter give you edge per second. To convert into pulses per second (PPS) - divide by 4. Then to convert to revolutions per second (RPS), divide by PRR:
+$$
+\text{rev/s} = \frac{\text{edges per second}}{4\times\ 408}
+$$
+
+I can take the information and calculate the velocity of the motor at 12V rated at 150 RPM,
+$$
+\text{rev/s} = \frac{\text{RPM}}{60\ \text{sec}} = \frac{150 \frac{rev}{min}}{60\ \text{sec}} = 2.5\ \text{rev/s}
+$$
+
+Therefore, the calculated speed of the motor should  about 2.5 rev/s at 12V.
+
+## Technical Documentation
+The source code for the project can be found in the associated [GitHub repository](https://github.com/
+brbownds/e155-lab5).
+
+### Schematic
+![Figure 1: Schematic of the physical circuit layout of the STM32L432 MCU Board and the 25GA-370 DC Motor.](Lab5_sche.png){height=500}
+
+### Flowchart
+![Figure 2: Flowchart of softward code](Lab5_fc.png){width=700}
+
+## Verifying Correct Motor Speeds
+In verifying the DC motor speed we can take a oscilloscope trace of the measured the motor signal and check this against the output of the signal. 
+
+![](verifying_speed){width=500}
+
+
+## Polling vs. Interrupts
+![](poll_int_FINAL.png){width=600} 
+
+Figure 2: Oscilloscope capture of a note coded at 262 Hz, measured at 260 Hz. The small difference (≈ 0.76% error) is well within the ±1% accuracy requirement.
+
+
+## Conclusion
+
+[Watch the demo!](https://youtu.be/5WauKLr9_yU)
+
+## AI Prototype Summary
