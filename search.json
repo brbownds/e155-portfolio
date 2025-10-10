@@ -49,6 +49,13 @@
     "text": "AI Prototype Summary\nThe LLM I used to generate SystemVerilog was Copilot. The quality of the LLM-generated SystemVerilog code was surprisingly high. The initial response included a clean and modular design with a separate decoder module and a top-level multiplexing module. The use of always_comb and always_ff blocks was appropriate and aligned with best practices for synthesizable code. The logic for toggling between inputs using a simple clock divider was intuitive and easy to follow. I’d rate the output high, mainly because it was correct, sound, and modular, and this is ideal for synthesis and simulation.\nOne interesting aspect was the use of logic instead of reg or wire, which is more idiomatic in SystemVerilog but less common in older Verilog codebases. The always_comb block was also a nice touch because it ensures combinational behavior without the risk of unintended latches. Additionally, the use of a separate decoder module made the design more reusable and testable, which is something I hadn’t considered in my initial approach. The design was synthesized successfully and behaved correctly in simulation.\nIf I were able to redo Lab 2 and implement an LLM in my HDL workflow, I would: - Start with a simulation-first mindset: Even if the code looks correct, simulating it early helps catch subtle issues like latch inference or multiple drivers. - Use the LLM for testbench generation: It’s great at generating stimulus and expected output logic, which speeds up verification."
   },
   {
+    "objectID": "e155 labs/lab 6/Lab_6.html",
+    "href": "e155 labs/lab 6/Lab_6.html",
+    "title": "Broderick Bownds",
+    "section": "",
+    "text": "hello"
+  },
+  {
     "objectID": "e155 labs/lab 1/Lab_1.html",
     "href": "e155 labs/lab 1/Lab_1.html",
     "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
