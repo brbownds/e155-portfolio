@@ -112,13 +112,6 @@
     "text": "AI Prototype Summary\nWhen I used ChatGPT to help me code for the STM32L432, I found the output surprisingly effective. The explanations were written in a way that pulled together both the math (timer frequency formulas) and the hardware setup steps (registers, GPIO alternate functions). In some cases, this was faster and clearer than digging through the reference manual on my own, since the manual is dense and not always organized around the specific use case I had in mind. For instance, the LLM explained the relation between PSC, ARR, and the timer input clock in one concise formula, something I would have had to piece together across multiple sections of the manual. This is once I uploaded the manual as reference.\nFor timers, it provided a full recipe with both math and register workflow. So I’d rate it more useful as a teacher than as a pure document search engine."
   },
   {
-    "objectID": "e155 labs/lab 6/Lab_6.html",
-    "href": "e155 labs/lab 6/Lab_6.html",
-    "title": "Broderick Bownds",
-    "section": "",
-    "text": "hello"
-  },
-  {
     "objectID": "e155 labs/lab 1/Lab_1.html",
     "href": "e155 labs/lab 1/Lab_1.html",
     "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
