@@ -1,0 +1,63 @@
+---
+title: "Keypad Scanner"
+---
+
+![](.png){width=600}
+
+## Introduction
+In this lab, a digital circuit was implemented on the FPGA to scan a 4×4 matrix keypad and display the last two hexadecimal digits pressed on a dual seven-segment display. Each key press was registered exactly once, regardless of how long the key was held, and additional inputs were ignored while one key remained pressed. The design used a slow clock divider for debouncing, a synchronizer to handle asynchronous inputs, and a finite state machine (FSM) to control scanning and key registration. Simulations verified correct functionality before programming the FPGA for final testing.
+
+## Design and Testing Methodology
+When interfacing mechanical inputs with digital systems, two key challenges must be addressed: **switch bouncing** and **metastability**. Switch bouncing occurs when a button press causes rapid transitions between logic levels before settling, often leading to multiple false detections. Metastability, on the other hand, arises when asynchronous signals from user inputs do not align with the system clock, potentially causing undefined or unstable logic states. Accounting for both circumstances was essential to ensure reliable key registration and predictable circuit behavior.
+
+A slow clock divider reduced the 48 MHz system clock to 240 Hz, providing sufficient time between samples to eliminate switch bounce. A two-stage synchronizer stabilized asynchronous signals from the keypad to prevent metastability. The main control logic was implemented as a finite state machine (FSM) that sequentially scanned each keypad row, detected valid presses, and ensured that only one key was registered per activation.
+## FPGA Design
+The FPGA implementation consisted of several SystemVerilog modules:
+
+At the top level (`lab3_bb.sv`), the internal high-speed oscillator (HSOSC) provided a 24 MHz clock, which was divided down by a counter to a slow clock of approximately 240 Hz. This slower clock was used both for keypad scanning and seven-segment display multiplexing, ensuring stable visual output and eliminating flicker or “ghosting.”
+
+The key modules were:
+
+`synchronizer.sv` – Implements a two-stage flip-flop synchronizer to align asynchronous keypad inputs, rows and columns to `row_sync` and `col_sync` the system clock, preventing metastability.
+
+`keyscan.sv` – A FSM that cycles through each keypad row, waits for settling, detects single key presses (active high press), and generates one-shot enable signals. It also locks out additional inputs while a key is held.
+
+`debounce.sv` – Uses a counter-based filter to ensure that a signal must remain stable for multiple clock cycles before being accepted as valid, removing the effects of switch bounce.
+
+`keydecoder.sv` – Converts the synchronized row and column pair into the corresponding hexadecimal digit.
+
+`sevenseg.sv` – Drives the dual seven-segment display using time multiplexing; the most recent digit is displayed on the right.
+
+### **Technical Documentation**
+The source code for the project can be found in the associated [GitHub repository](https://github.com/brbownds/e155-lab3).
+
+### **Block Diagram**
+![Figure 1: System-level block diagram illustrating data flow between the oscillator, synchronizer, FSM, decoder, and display modules.](.png){width=600}
+
+### Schematic
+![Figure 2: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.](.png){width=600}
+
+![](.png){width=600}
+
+#### Testbench Simulations
+Each major SystemVerilog module was verified through an individual testbench in QuestaSim to confirm correct functionality before integration. These simulations validated signal timing, state transitions, and inter-module communication, ensuring that each component operated as intended. This modular testing approach demonstrated the design’s robustness and reusability—allowing issues to be isolated and resolved early before full system synthesis on the FPGA.
+
+![Figure 3a: QuestaSim simulation that the `lab3_bb.sv`overall functions properly](.png)
+
+
+![Figure 3b: QuestaSim simulation that the `synchronizer.sv`overall functions properly](.png)
+
+
+![Figure 3c: QuestaSim simulation that the `keyscan.sv`overall functions properly](.png)
+
+
+![Figure 3d: QuestaSim simulation that the `debounce.sv`overall functions properly](.png)
+
+
+![Figure 3e: QuestaSim simulation that the `keydecoder.sv`overall functions properly](.png)
+
+
+## Conclusion
+
+
+## AI Prototype Summary
