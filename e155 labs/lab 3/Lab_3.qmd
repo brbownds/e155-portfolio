@@ -1,3 +1,7 @@
+Comming Soon
+
+::: {.hidden}
+
 ---
 title: "Keypad Scanner"
 ---
@@ -61,3 +65,4 @@ Each major SystemVerilog module was verified through an individual testbench in 
 
 
 ## AI Prototype Summary
+:::
