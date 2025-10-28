@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>lab_6 – Broderick Bownds</title>
+<title>The Internet of Things and Serial Peripheral Interface – Broderick Bownds</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -107,7 +107,7 @@ ul.task-list li input[type="checkbox"] {
  <span class="dropdown-text">Lab 2</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../../e155 labs/lab 3/Lab_3.qmd">
+    <a class="dropdown-item" href="../../e155 labs/lab 3/Lab_3.html">
  <span class="dropdown-text">Lab 3</span></a>
   </li>  
         <li>
@@ -143,17 +143,102 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#design-and-testing-methodology" id="toc-design-and-testing-methodology" class="nav-link" data-scroll-target="#design-and-testing-methodology">Design and Testing Methodology</a></li>
+  <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation</a>
+  <ul class="collapse">
+  <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
+  </ul></li>
+  <li><a href="#verifiying-results" id="toc-verifiying-results" class="nav-link" data-scroll-target="#verifiying-results">Verifiying Results</a></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  <li><a href="#ai-prototype-summary" id="toc-ai-prototype-summary" class="nav-link" data-scroll-target="#ai-prototype-summary">AI Prototype Summary</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">The Internet of Things and Serial Peripheral Interface</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
+
+<p><img src="lab6_intro.png" class="img-fluid" width="1900"></p>
+<section id="introduction" class="level2">
+<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<p>In this lab, an Internet of Things (IoT) device was built using the STM32L432KC microcontroller, DS1722 temperature sensor, and ESP8266 WiFi module. The system measures ambient temperature and allows users to toggle an onboard LED through a web interface. The MCU communicates with the DS1722 via SPI and the ESP8266 via UART, using custom CMSIS-based drivers. This project demonstrated SPI communication, web-based data display, and hardware-software integration in an embedded system. By verifying signal timing with a logic analyzer and serving live temperature data over WiFi, I implemented a fully functional MCU-controlled IoT sensor node.</p>
+</section>
+<section id="design-and-testing-methodology" class="level2">
+<h2 class="anchored" data-anchor-id="design-and-testing-methodology">Design and Testing Methodology</h2>
+<p>The system was designed using custom CMSIS-based libraries for SPI, GPIO, and UART communication. The SPI library initializes the STM32L432KC’s SPI1 peripheral by configuring its clock source, baud rate, polarity, and phase (<code>CPOL = 0</code>, <code>CPHA = 1</code>), ensuring compatibility with the DS1722 sensor’s active-high chip enable behavior. A dedicated temperature sensor library was built on top of the SPI driver providing functions to set resolution (8–12 bits) and read temperature data through two’s-complement conversion.</p>
+<p>The DS1722 was wired in standard 4-wire SPI mode, with <code>SPI_CE</code>, <code>SPI_SCK</code>, <code>SPI_MISO</code>, and <code>SPI_MOSI</code> connections verified on a logic analyzer. The analyzer confirmed correct clock polarity, phase, and timing between transmitted and received bytes. To validate functionality, temperature readings were observed through UART printouts at varying conditions—room temperature, finger contact, and cooling with compressed air. These tests confirmed accurate and responsive behavior across the expected range.</p>
+</section>
+<section id="technical-documentation" class="level2">
+<h2 class="anchored" data-anchor-id="technical-documentation">Technical Documentation</h2>
+<p>The source code for the project can be found in the associated <a href="https://github.com/%20brbownds/e155-lab6">GitHub repository</a>.</p>
+<section id="schematic" class="level3">
+<h3 class="anchored" data-anchor-id="schematic">Schematic</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Lab6_sche.png" height="500" class="figure-img"></p>
+<figcaption>Figure 1: Schematic of the physical circuit layout of the STM32L432 MCU Board with the DS1722 Temperature Sensor and the wi-fi module ESP 8266</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="verifiying-results" class="level2">
+<h2 class="anchored" data-anchor-id="verifiying-results">Verifiying Results</h2>
+<p>To verify correct SPI operation, the oscilloscope’s logic analyzer was used to monitor <code>SPI_CE</code>, <code>SPI_SCK</code>, <code>SPI_MOSI</code>, and <code>SPI_MISO</code> during temperature reads. The captured traces confirmed proper chip enable timing, correct clock polarity and phase, and expected byte sequencing for MSB and LSB transfers.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lab6_oscope.png" class="img-fluid figure-img" width="700"></p>
+<figcaption>Figure 2: Logic analyzer capture showing the SPI communication between the MCU and the DS1722 temperature sensor. The <code>byte = 0xE0</code> indicates that the sensor was at 8-bit resolution.</figcaption>
+</figure>
+</div>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lab6_oscope2.png" class="img-fluid figure-img" width="700"></p>
+<figcaption>Figure 3: Logic analyzer capture showing the communication between the MCU and the DS1722 sensor at 12-bit resolution. <code>config = 0xEE</code> shows that the sensor was set to its highest resolution.</figcaption>
+</figure>
+</div>
+<p>The DS1722’s output was further validated by simulating temperatures from –10 °C to 30 °C in 10 °C increments while testing all resolutions from 8-bit to 12-bit. As the resolution increased, fractional precision improved, and the measured values closely matched the expected two’s-complement temperature codes from the datasheet.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="lab6_status.png" class="img-fluid figure-img" width="700"></p>
+<figcaption>Figure 4: Screenshots of the website page at different points in time to take the range of temperatures varying bit resolution.</figcaption>
+</figure>
+</div>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This lab demonstrated successful SPI communication between the STM32L432KC microcontroller and the DS1722 digital temperature sensor. The sensor’s configuration and data transfer were verified using both serial output and logic analyzer traces, confirming correct clock timing, chip-enable behavior, and data alignment. Temperature readings were accurate across a range from –10 °C to 30 °C, with increasing precision observed from 8-bit to 12-bit resolution. Although UART communication with the ESP8266 proved unreliable, the MCU implementation met the key objectives of SPI functionality, temperature measurement, and data formatting for IoT applications. I spent <strong>31</strong> hours on this lab.</p>
+</section>
+<section id="ai-prototype-summary" class="level2">
+<h2 class="anchored" data-anchor-id="ai-prototype-summary">AI Prototype Summary</h2>
+<p>I used Microsoft’s CoPilot to help design both my web interface for displaying temperature data and the firmware function that retrieves that data from the DS1722 sensor over SPI on the STM32L432KC. The LLM produced functional, readable code that matched my setup, and its explanations helped me verify my own reasoning—particularly in the areas of SPI timing, CMSIS register usage, and manual chip-select control. I would rate the quality of the output as high The generated HTML dashboard was immediately usable: it was responsive, clean, and well-commented.</p>
+<p>The C code for the SPI transaction was also well-structured—it adhered to CMSIS conventions. However, the one area I had to modify was peripheral initialization: the function assumed SPI1 was already configured, so I had to add setup code for the GPIO and SPI mode. Overall the LLM did better than mediocre which is not unusual.</p>
+
+
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

@@ -7,95 +7,32 @@
     "text": "Hello! My name is Broderick Bownds and I am a junior engineering major with a focus of Electrical and Computer Engineering at Harvey Mudd College. I am passionate about designing efficient systems at the intersection of hardware and signal processing. My experience spans FPGA development, system-level design, CAD-based prototyping. Beyond the lab, I am committed to inclusive innovation, such as redesigning neuroimaging caps for textured hair, mentoring youth in 3D design and coding through Project Think, being involved in NSBE, and leading through the Annenberg Leadership Forum."
   },
   {
-    "objectID": "e155 labs/lab 2/Lab_2.html#introduction",
-    "href": "e155 labs/lab 2/Lab_2.html#introduction",
-    "title": "Multiplexing Seven Segment Display",
+    "objectID": "e155 labs/lab 3/Lab_3.html#introduction",
+    "href": "e155 labs/lab 3/Lab_3.html#introduction",
+    "title": "Keypad Scanner",
     "section": "Introduction",
-    "text": "Introduction\nIn this lab, a time-multiplexed display system was implemented using an FPGA Upduino Board to drive a dual seven-segment display with a single decoder module. The system displayed two independent hexadecimal values sourced from two DIP switches and showed their sum on five LEDs. The design utilized transistor-based current control such as PNP transistors to safely drive the common anodes of the displays, ensuring proper brightness and avoiding bleeding or ghosting."
+    "text": "Introduction\nIn this lab, a digital circuit was implemented on the FPGA to scan a 4×4 matrix keypad and display the last two hexadecimal digits pressed on a dual seven-segment display. Each key press was registered exactly once, regardless of how long the key was held, and additional inputs were ignored while one key remained pressed. The design used a slow clock divider for debouncing, a synchronizer to handle asynchronous inputs, and a finite state machine (FSM) to control scanning and key registration. Simulations verified correct functionality before programming the FPGA for final testing."
   },
   {
-    "objectID": "e155 labs/lab 2/Lab_2.html#design-and-testing-methodology",
-    "href": "e155 labs/lab 2/Lab_2.html#design-and-testing-methodology",
-    "title": "Multiplexing Seven Segment Display",
+    "objectID": "e155 labs/lab 3/Lab_3.html#design-and-testing-methodology",
+    "href": "e155 labs/lab 3/Lab_3.html#design-and-testing-methodology",
+    "title": "Keypad Scanner",
     "section": "Design and Testing Methodology",
-    "text": "Design and Testing Methodology\nThe design included the iCE FPGA’s high-speed osciallator (HSOSC) divided down by a counter to slow down the multiplexing clock. The slow clock toggles between enabling the left or right digit by activating its common anode transistor whiel routing the correspodnign 4-bit input (s0 or s1) into the seven segment decoder. If too fast or slow then there would be flickering or the two numbers would bleed together so we had the switching at 240Hz. Humans can perceive refresh rate at 60Hz so we can speed up the frequency by a factor of 4 it won’t look like the two displays are switching.\nThe outputs of the DIP swithes provided the two hexadecimal values (s0 and s1). These values are added and the (max number is 30, 5-bit wide) was displayed on five external LEDs. The seven segment require additonal transistor circuitry to handle the higher current of the common anode pins, since a FPGA pin cannot source the needed current (~8mA)."
+    "text": "Design and Testing Methodology\nWhen interfacing mechanical inputs with digital systems, two key challenges must be addressed: switch bouncing and metastability. Switch bouncing occurs when a button press causes rapid transitions between logic levels before settling, often leading to multiple false detections. Metastability, on the other hand, arises when asynchronous signals from user inputs do not align with the system clock, potentially causing undefined or unstable logic states. Accounting for both circumstances was essential to ensure reliable key registration and predictable circuit behavior.\nA slow clock divider reduced the 48 MHz system clock to 240 Hz, providing sufficient time between samples to eliminate switch bounce. A two-stage synchronizer stabilized asynchronous signals from the keypad to prevent metastability. The main control logic was implemented as a finite state machine (FSM) that sequentially scanned each keypad row, detected valid presses, and ensured that only one key was registered per activation. ## FPGA Design The FPGA implementation consisted of several SystemVerilog modules:\nAt the top level (lab3_bb.sv), the internal high-speed oscillator (HSOSC) provided a 24 MHz clock, which was divided down by a counter to a slow clock of approximately 240 Hz. This slower clock was used both for keypad scanning and seven-segment display multiplexing, ensuring stable visual output and eliminating flicker or “ghosting.”\nThe key modules were:\nsynchronizer.sv – Implements a two-stage flip-flop synchronizer to align asynchronous keypad inputs, rows and columns to row_sync and col_sync the system clock, preventing metastability.\nkeyscan.sv – A FSM that cycles through each keypad row, waits for settling, detects single key presses (active high press), and generates one-shot enable signals. It also locks out additional inputs while a key is held.\ndebounce.sv – Uses a counter-based filter to ensure that a signal must remain stable for multiple clock cycles before being accepted as valid, removing the effects of switch bounce.\nkeydecoder.sv – Converts the synchronized row and column pair into the corresponding hexadecimal digit.\nsevenseg.sv – Drives the dual seven-segment display using time multiplexing; the most recent digit is displayed on the right.\n\nTechnical Documentation\nThe source code for the project can be found in the associated GitHub repository.\n\n\nBlock Diagram\n\n\n\nFigure 1: System-level block diagram illustrating data flow between the oscillator, synchronizer, FSM, decoder, and display modules.\n\n\n\n\nSchematic\n\n\n\nFigure 2: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.\n\n\n\n\nTestbench Simulations\nEach major SystemVerilog module was verified through an individual testbench in QuestaSim to confirm correct functionality before integration. These simulations validated signal timing, state transitions, and inter-module communication, ensuring that each component operated as intended. This modular testing approach demonstrated the design’s robustness and reusability—allowing issues to be isolated and resolved early before full system synthesis on the FPGA.\n\n\n\nFigure 3a: QuestaSim simulation that the lab3_bb.svoverall functions properly\n\n\n\n\n\nFigure 3b: QuestaSim simulation that the synchronizer.svoverall functions properly\n\n\n\n\n\nFigure 3c: QuestaSim simulation that the keyscan.svoverall functions properly\n\n\n\n\n\nFigure 3d: QuestaSim simulation that the debounce.svoverall functions properly\n\n\n\n\n\nFigure 3e: QuestaSim simulation that the keydecoder.svoverall functions properly"
   },
   {
-    "objectID": "e155 labs/lab 2/Lab_2.html#fpga-design",
-    "href": "e155 labs/lab 2/Lab_2.html#fpga-design",
-    "title": "Multiplexing Seven Segment Display",
-    "section": "FPGA Design",
-    "text": "FPGA Design\nThe FPGA design for this lab was constructed in a modular and hierarchical method to meet teh multiplexed display instructions. The top level module lab2_bb coordinated the system while sevenseg provided the specific functionality.\n\n\n\n\n\n\n\n\nSignal Name\nType\nDetails\n\n\n\n\n[3:0] s0, s1\ninput\nDIP switches\n\n\n[4:0] led\noutput\nLEDs (the sum of s0 and s1)\n\n\n[6:0] seg\noutput\ncommon anode outputs on 7-segment display\n\n\ndisp0, disp1\ninternal\nthe “enable” on the mux taking in s0 and s1 as inputs\n\n\n\nThere is a top level module lab2_bb that instaniates the iCE40 oscillator and uses lab2_bbtb to verify simulation. The modules divides frequency using a 25-bit counter and have it “drive high” at the 19th bit (or when counter ==(2.^19)). This toggles a select signal select_mux to switch between the two hexadecimal inputs. Then it assigns the sum out (assign led = s0 + s1). Then control the digit enable signals disp0 and disp1 to ensure one display is high at a time. The sevenseg module is reused from Lab 1 and is a pure combinational decoder.\n\nTechnical Documentation\nThe source code for the project can be found in the associated GitHub repository.\n\n\nBlock Diagram\n\nFigure 1: Block diagram of the Verilog design.\nThe block diagram in Figure 2 demonstrates the overall architecture of the design. The top-level module lab2_bb includes one other module: the seven segment decoder while all the other outputs are internal.\n\n\nSchematic\n\nFigure 2: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.\n\nFigure 3: Shows the calculations of the resistors from Figure 3. A explanation below why each resistor was intentionally used:\n(1) PNP transistor: The transistor drives a lot of current and ensure that the FPGA pins were not sinking more than 8mA (our safety margin was 4mA). So thefore the base emitter saturation voltage (VBE(sat) = 0.7V). Taken into account then our resistor value is 650Ω.\n(2) Green LEDs: The forward voltage of a green LED is typically ~2V and we want current to be reasonably low at ~5mA and still be somewhat. Our resistor value is 260Ω.\n(3) 7-Segment: The PNP transistor also contains a collector emitter saturation voltage (VCE(sat) of 0.2V. The transistor drives a lot of current and ensure that the FPGA pins were not sinking more than 8mA (the safety margin used was 1mA). Then take into account the red LED forward voltage (~1.8V). Therefore the resistor value is 1.3kΩ."
-  },
-  {
-    "objectID": "e155 labs/lab 2/Lab_2.html#results-and-discussion",
-    "href": "e155 labs/lab 2/Lab_2.html#results-and-discussion",
-    "title": "Multiplexing Seven Segment Display",
-    "section": "Results and Discussion",
-    "text": "Results and Discussion\nThe QuestaSim confirmed the correct operation across all 256 input combinations and expected values. disp0 and disp1 toggled correctly in the end. This proved to the more diffciult protion of the lab was debugging and following the modular flow of how and what was affecting disp0 and disp1. The segment encodings matched the expected hexadecimal vlaues as well as the LED sum ([4:0]led) mathced the mathematical sum in all cases. The dual seven segment provided a clean display with no signs of ghosting. Some limitations and improvements could be adding a programable counter division could help with flexibility because the multiplexing frequency was fixed.\n\nTestbench Simulation\n Figure 4: Screenshot of a QuestaSim simulation that the sevenseg module works with inputs [3:0]s and outputs [6:0]seg so we can also affirm and validate to move on to the top module lab2_bb for test simulation.\n Figure 5a: Screenshot of a QuestaSim simulation demonstrating that all 256 tests succesfully work for the singel seven segment decoder module. We also see the select line: select_mux toggles and switches, therefore triggering disp0 and disp1 correctly.\n Figure 5b: Screenshot of QuestaSim waveforms that show a simulation that executed a run time of 0.5 seconds instead of 50000 ns to see the toggle on the select line: select_mux. This initiates disp0 and disp1 to switch from LOW to HIGH and vice versa."
-  },
-  {
-    "objectID": "e155 labs/lab 2/Lab_2.html#conclusion",
-    "href": "e155 labs/lab 2/Lab_2.html#conclusion",
-    "title": "Multiplexing Seven Segment Display",
+    "objectID": "e155 labs/lab 3/Lab_3.html#conclusion",
+    "href": "e155 labs/lab 3/Lab_3.html#conclusion",
+    "title": "Keypad Scanner",
     "section": "Conclusion",
-    "text": "Conclusion\nIn this lab, I successfully designed and implemented a time-multiplexed dual seven-segment display system on the FPGA. By dividing down the high-speed oscillator, I generated a stable clock that alternately enabled the two display digits while sharing a single segment decoder. The system correctly displayed two independent hexadecimal values and their binary sum on external LEDs. Both simulation and hardware testing confirmed the correctness of the design.\nLab 2 emphasized the importance of time multiplexing as a resource-sharing strategy. I learned how to coordinate hardware timing so that multiple devices could be driven with limited FPGA resources. Debugging in QuestaSim revealed subtle issues, such as uninitialized signals and reset polarity mismatches, which highlighted the difference between simulation behavior and physical FPGA behavior. If given more time, I would experiment with brightness control through pulse-width modulation (PWM) to explore display dimming. I spent a total of 25 hours working on this lab."
+    "text": "Conclusion"
   },
   {
-    "objectID": "e155 labs/lab 2/Lab_2.html#ai-prototype-summary",
-    "href": "e155 labs/lab 2/Lab_2.html#ai-prototype-summary",
-    "title": "Multiplexing Seven Segment Display",
+    "objectID": "e155 labs/lab 3/Lab_3.html#ai-prototype-summary",
+    "href": "e155 labs/lab 3/Lab_3.html#ai-prototype-summary",
+    "title": "Keypad Scanner",
     "section": "AI Prototype Summary",
-    "text": "AI Prototype Summary\nThe LLM I used to generate SystemVerilog was Copilot. The quality of the LLM-generated SystemVerilog code was surprisingly high. The initial response included a clean and modular design with a separate decoder module and a top-level multiplexing module. The use of always_comb and always_ff blocks was appropriate and aligned with best practices for synthesizable code. The logic for toggling between inputs using a simple clock divider was intuitive and easy to follow. I’d rate the output high, mainly because it was correct, sound, and modular, and this is ideal for synthesis and simulation.\nOne interesting aspect was the use of logic instead of reg or wire, which is more idiomatic in SystemVerilog but less common in older Verilog codebases. The always_comb block was also a nice touch because it ensures combinational behavior without the risk of unintended latches. Additionally, the use of a separate decoder module made the design more reusable and testable, which is something I hadn’t considered in my initial approach. The design was synthesized successfully and behaved correctly in simulation.\nIf I were able to redo Lab 2 and implement an LLM in my HDL workflow, I would: - Start with a simulation-first mindset: Even if the code looks correct, simulating it early helps catch subtle issues like latch inference or multiple drivers. - Use the LLM for testbench generation: It’s great at generating stimulus and expected output logic, which speeds up verification."
-  },
-  {
-    "objectID": "e155 labs/lab 1/Lab_1.html",
-    "href": "e155 labs/lab 1/Lab_1.html",
-    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
-    "section": "",
-    "text": "Figure 1: Shows the Microprocessor Development Board v.4 with the Upduino FPGA and MCU, along with pushbuttons and switches.\nIn this lab, a design was implemented on the FPGA to demonstrate the functionality of the on-board high-speed oscillator by blinking one of the on-board LEDs on the development board (shown in Figure 1). The high-speed oscillator was configured at a frequency of 48 MHz and divided down using a counter to achieve a blinking frequency of 2.4 Hz."
-  },
-  {
-    "objectID": "e155 labs/lab 1/Lab_1.html#introduction",
-    "href": "e155 labs/lab 1/Lab_1.html#introduction",
-    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
-    "section": "",
-    "text": "Figure 1: Shows the Microprocessor Development Board v.4 with the Upduino FPGA and MCU, along with pushbuttons and switches.\nIn this lab, a design was implemented on the FPGA to demonstrate the functionality of the on-board high-speed oscillator by blinking one of the on-board LEDs on the development board (shown in Figure 1). The high-speed oscillator was configured at a frequency of 48 MHz and divided down using a counter to achieve a blinking frequency of 2.4 Hz."
-  },
-  {
-    "objectID": "e155 labs/lab 1/Lab_1.html#design-and-testing-methodology",
-    "href": "e155 labs/lab 1/Lab_1.html#design-and-testing-methodology",
-    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
-    "section": "Design and Testing Methodology",
-    "text": "Design and Testing Methodology\nWe assembled the E155 development board by soldering SMT and THT components, followed by verifying voltage regulators (3.3V and 5V). Testing involved loading a pre-written FPGA design to blink LEDs and then programming the MCU to read and echo signals. Once verified, we wrote our own Verilog modules to interface DIP switches with LEDs and a 7-segment display, synthesizing the design in Lattice Radiant and simulating with Questa ModelSim. Git was used to track project source code files.\nThe on-board high-speed oscillator (HSOSC) from the iCE40 UltraPlus primitive library was used to generate a clock signal at 24 MHz. Then, a counter was used to divide the high-frequency clock signal down so that the blinking frequency could be easily visualized using one of the on-board LEDs."
-  },
-  {
-    "objectID": "e155 labs/lab 1/Lab_1.html#fpga-design",
-    "href": "e155 labs/lab 1/Lab_1.html#fpga-design",
-    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
-    "section": "FPGA Design",
-    "text": "FPGA Design\nOn the E155 FPGA board, the inputs and outputs are organized around the switches, LEDs, and 7-segment display. The four DIP switches s[3:0] serve as user inputs, letting you select binary values that feed into the logic of the design. The three LEDs led[2:0] provide simple output indicators: led[0] and led[1] respond to combinations of the switch inputs, while led[2] blinks at a steady rate using the FPGA’s internal 48 MHz oscillator. Finally, the seven outputs seg[6:0] drive the segments of a common anode 7-segment display, which decodes the switch settings into a numeric pattern from to 0 to F.\n\n\n\nSignal Name\nType\nDetails\n\n\n\n\n[3:0] s\ninput\nDIP switches (SW6)\n\n\n[2:0] led\noutput\nLEDs (found on P42, P38, and P28)\n\n\n[6:0] seg\noutput\ncommon anode outputs on 7-segment display\n\n\n\nIn regards to the LEDs, led[2] blinks at a frequency of 2.4Hz while led[0] switches on based a XOR relationship with s[0] and s[1] and led[1] swithes on based on AND relationship with s[2] and s[3].\nHere is the following truth table:\n\n\n\n[3:0]s\n[2:0]led\n[6:0]seg\n\n\n\n\n0000\n000\n0000001\n\n\n0001\n001\n1001111\n\n\n0010\n001\n0010010\n\n\n0011\n000\n0000110\n\n\n0100\n000\n1001100\n\n\n0101\n001\n0100100\n\n\n0110\n001\n0100000\n\n\n0111\n000\n0001111\n\n\n1000\n000\n0000000\n\n\n1001\n001\n0001100\n\n\n1010\n001\n0001000\n\n\n1011\n000\n1100000\n\n\n1100\n010\n0110001\n\n\n1101\n011\n1000010\n\n\n1110\n011\n0110000\n\n\n1111\n010\n0111000\n\n\n\n\nTechnical Documentation\nThe source code for the project can be found in the associated GitHub repository.\n\n\nBlock Diagram\n\nFigure 2: Block diagram of the Verilog design.\nThe block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module lab1_bb includes two submodules: the high-speed oscillator block (HSOSC) and the 7 segement display sevenseg_dis.\n\n\nSchematic\n\nFigure 3: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.\n\nFigure 4: Show the internal wire from the FPGA to the 7-segment display.\nThis shows the physical layout of the design. An internal 1.5 kΩ pull-up resistor was used to ensure the active-low reset pin was not floating. The current running through the diode of the seven segment display (~1 mA) was divided by the Vcc subtracted by the forward voltage of a red LED."
-  },
-  {
-    "objectID": "e155 labs/lab 1/Lab_1.html#results-and-discussion",
-    "href": "e155 labs/lab 1/Lab_1.html#results-and-discussion",
-    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
-    "section": "Results and Discussion",
-    "text": "Results and Discussion\nThe design met all intended design objectives through our testbench simulations.\n\nTestbench Simulation\n Figure 5: Screenshot of a QuestaSim simulation demonstrating the blinking output signal.\nNote that the timescale for the clock divider was modified to divide by 4. If a more precise output frequency was desired, a more sophisticated counter could be developed. The current design only allows for the clock to be divided by powers of two. (MIGHT GET RID OF)\n\n\nOscilliscope of Blinking LED\n\nFigure 6: Screenshot of a oscilliscope waveform validating the exact frequency of 2.41 Hz."
-  },
-  {
-    "objectID": "e155 labs/lab 1/Lab_1.html#conclusion",
-    "href": "e155 labs/lab 1/Lab_1.html#conclusion",
-    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
-    "section": "Conclusion",
-    "text": "Conclusion\nThe design successfully blinked an external LED using the on-board high-speed oscillator. I spent a total of 10+ hours working on this lab."
-  },
-  {
-    "objectID": "e155 labs/lab 1/Lab_1.html#ai-prototype-summary",
-    "href": "e155 labs/lab 1/Lab_1.html#ai-prototype-summary",
-    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
-    "section": "AI Prototype Summary",
-    "text": "AI Prototype Summary\nWhen conducting the AI prototype summary, the LLM I utilized was Microsoft’s Copilot. I prompted it to “Write SystemVerilog HDL to leverage the internal high-speed oscillator in the Lattice UP5K FPGA and blink an LED at 2 Hz, using idiomatic SystemVerilog. Copilot produced a short module that instantiated the UP5K high-speed oscillator, divided the clock with a counter, and drove an LED. The style was pretty clean for the counter. However, when I pasted it into a fresh Lattice Radiant project and hit Synthesize, Radiant failed immediately with a syntax error: Copilot had dropped a closing parenthesis in the oscillator instantiation and missed a semicolon at the end of a localparam line. After I copied Radiant’s error text back into Copilot, it regenerated the block with the missing ) and ; added. With those fixed, the synthesis was completed.\nI would rate Copilot’s output as “good scaffolding, needs verification.” It nailed the overall structure and used modern SystemVerilog constructs I like adopting. It also wrote a clear reset path for the counter. None of those were brand-new to me, but it was helpful to see them composed neatly in a minimal example. If I did this again, I would tighten my workflow in three ways:\n\nTreat the LLM as a code generator, not an authority. I’ll immediately run the output, then feed exact tool errors back to the model for focused corrections.\nAsk the LLM to “emit compile ready, tool-specific primitives” and include a checklist in the prompt. That nudge seems to reduce trivial mistakes.\nAdd a quick unit sanity check in the prompt: “Assume ~48 MHz HFOSC; show the counter width/math to reach ~2 Hz.” That forces the model to spell out the divide math, which is convenient to verify before synthesis."
+    "text": "AI Prototype Summary"
   },
   {
     "objectID": "e155 labs/lab 5/Lab_5.html",
@@ -152,6 +89,139 @@
     "title": "Interrupts",
     "section": "AI Prototype Summary",
     "text": "AI Prototype Summary\nCopilot helped me interface a quadrature encoder with the STM32L432KC and was a not-so-surprsing surprising experience. I asked for interrupt-based decoding, and Copilot immediately suggested using EXTI lines mapped to PA0 and PA1—pins that are straightforward to configure and well-supported by the STM32. The explanation was concise but thorough, walking through both the hardware setup and the software interrupt handlers. I appreciated how it didn’t just spit out code, but explained the reasoning behind the design choices, like why rising/falling edge detection is useful and how to interpret the encoder phase relationship."
+  },
+  {
+    "objectID": "e155 labs/lab 1/Lab_1.html",
+    "href": "e155 labs/lab 1/Lab_1.html",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
+    "section": "",
+    "text": "Figure 1: Shows the Microprocessor Development Board v.4 with the Upduino FPGA and MCU, along with pushbuttons and switches.\nIn this lab, a design was implemented on the FPGA to demonstrate the functionality of the on-board high-speed oscillator by blinking one of the on-board LEDs on the development board (shown in Figure 1). The high-speed oscillator was configured at a frequency of 48 MHz and divided down using a counter to achieve a blinking frequency of 2.4 Hz."
+  },
+  {
+    "objectID": "e155 labs/lab 1/Lab_1.html#introduction",
+    "href": "e155 labs/lab 1/Lab_1.html#introduction",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
+    "section": "",
+    "text": "Figure 1: Shows the Microprocessor Development Board v.4 with the Upduino FPGA and MCU, along with pushbuttons and switches.\nIn this lab, a design was implemented on the FPGA to demonstrate the functionality of the on-board high-speed oscillator by blinking one of the on-board LEDs on the development board (shown in Figure 1). The high-speed oscillator was configured at a frequency of 48 MHz and divided down using a counter to achieve a blinking frequency of 2.4 Hz."
+  },
+  {
+    "objectID": "e155 labs/lab 1/Lab_1.html#design-and-testing-methodology",
+    "href": "e155 labs/lab 1/Lab_1.html#design-and-testing-methodology",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
+    "section": "Design and Testing Methodology",
+    "text": "Design and Testing Methodology\nWe assembled the E155 development board by soldering SMT and THT components, followed by verifying voltage regulators (3.3V and 5V). Testing involved loading a pre-written FPGA design to blink LEDs and then programming the MCU to read and echo signals. Once verified, we wrote our own Verilog modules to interface DIP switches with LEDs and a 7-segment display, synthesizing the design in Lattice Radiant and simulating with Questa ModelSim. Git was used to track project source code files.\nThe on-board high-speed oscillator (HSOSC) from the iCE40 UltraPlus primitive library was used to generate a clock signal at 24 MHz. Then, a counter was used to divide the high-frequency clock signal down so that the blinking frequency could be easily visualized using one of the on-board LEDs."
+  },
+  {
+    "objectID": "e155 labs/lab 1/Lab_1.html#fpga-design",
+    "href": "e155 labs/lab 1/Lab_1.html#fpga-design",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
+    "section": "FPGA Design",
+    "text": "FPGA Design\nOn the E155 FPGA board, the inputs and outputs are organized around the switches, LEDs, and 7-segment display. The four DIP switches s[3:0] serve as user inputs, letting you select binary values that feed into the logic of the design. The three LEDs led[2:0] provide simple output indicators: led[0] and led[1] respond to combinations of the switch inputs, while led[2] blinks at a steady rate using the FPGA’s internal 48 MHz oscillator. Finally, the seven outputs seg[6:0] drive the segments of a common anode 7-segment display, which decodes the switch settings into a numeric pattern from to 0 to F.\n\n\n\nSignal Name\nType\nDetails\n\n\n\n\n[3:0] s\ninput\nDIP switches (SW6)\n\n\n[2:0] led\noutput\nLEDs (found on P42, P38, and P28)\n\n\n[6:0] seg\noutput\ncommon anode outputs on 7-segment display\n\n\n\nIn regards to the LEDs, led[2] blinks at a frequency of 2.4Hz while led[0] switches on based a XOR relationship with s[0] and s[1] and led[1] swithes on based on AND relationship with s[2] and s[3].\nHere is the following truth table:\n\n\n\n[3:0]s\n[2:0]led\n[6:0]seg\n\n\n\n\n0000\n000\n0000001\n\n\n0001\n001\n1001111\n\n\n0010\n001\n0010010\n\n\n0011\n000\n0000110\n\n\n0100\n000\n1001100\n\n\n0101\n001\n0100100\n\n\n0110\n001\n0100000\n\n\n0111\n000\n0001111\n\n\n1000\n000\n0000000\n\n\n1001\n001\n0001100\n\n\n1010\n001\n0001000\n\n\n1011\n000\n1100000\n\n\n1100\n010\n0110001\n\n\n1101\n011\n1000010\n\n\n1110\n011\n0110000\n\n\n1111\n010\n0111000\n\n\n\n\nTechnical Documentation\nThe source code for the project can be found in the associated GitHub repository.\n\n\nBlock Diagram\n\nFigure 2: Block diagram of the Verilog design.\nThe block diagram in Figure 1 demonstrates the overall architecture of the design. The top-level module lab1_bb includes two submodules: the high-speed oscillator block (HSOSC) and the 7 segement display sevenseg_dis.\n\n\nSchematic\n\nFigure 3: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.\n\nFigure 4: Show the internal wire from the FPGA to the 7-segment display.\nThis shows the physical layout of the design. An internal 1.5 kΩ pull-up resistor was used to ensure the active-low reset pin was not floating. The current running through the diode of the seven segment display (~1 mA) was divided by the Vcc subtracted by the forward voltage of a red LED."
+  },
+  {
+    "objectID": "e155 labs/lab 1/Lab_1.html#results-and-discussion",
+    "href": "e155 labs/lab 1/Lab_1.html#results-and-discussion",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
+    "section": "Results and Discussion",
+    "text": "Results and Discussion\nThe design met all intended design objectives through our testbench simulations.\n\nTestbench Simulation\n Figure 5: Screenshot of a QuestaSim simulation demonstrating the blinking output signal.\nNote that the timescale for the clock divider was modified to divide by 4. If a more precise output frequency was desired, a more sophisticated counter could be developed. The current design only allows for the clock to be divided by powers of two. (MIGHT GET RID OF)\n\n\nOscilliscope of Blinking LED\n\nFigure 6: Screenshot of a oscilliscope waveform validating the exact frequency of 2.41 Hz."
+  },
+  {
+    "objectID": "e155 labs/lab 1/Lab_1.html#conclusion",
+    "href": "e155 labs/lab 1/Lab_1.html#conclusion",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
+    "section": "Conclusion",
+    "text": "Conclusion\nThe design successfully blinked an external LED using the on-board high-speed oscillator. I spent a total of 10+ hours working on this lab."
+  },
+  {
+    "objectID": "e155 labs/lab 1/Lab_1.html#ai-prototype-summary",
+    "href": "e155 labs/lab 1/Lab_1.html#ai-prototype-summary",
+    "title": "FPGA Lab: High-Speed Oscillator LED Blinker",
+    "section": "AI Prototype Summary",
+    "text": "AI Prototype Summary\nWhen conducting the AI prototype summary, the LLM I utilized was Microsoft’s Copilot. I prompted it to “Write SystemVerilog HDL to leverage the internal high-speed oscillator in the Lattice UP5K FPGA and blink an LED at 2 Hz, using idiomatic SystemVerilog. Copilot produced a short module that instantiated the UP5K high-speed oscillator, divided the clock with a counter, and drove an LED. The style was pretty clean for the counter. However, when I pasted it into a fresh Lattice Radiant project and hit Synthesize, Radiant failed immediately with a syntax error: Copilot had dropped a closing parenthesis in the oscillator instantiation and missed a semicolon at the end of a localparam line. After I copied Radiant’s error text back into Copilot, it regenerated the block with the missing ) and ; added. With those fixed, the synthesis was completed.\nI would rate Copilot’s output as “good scaffolding, needs verification.” It nailed the overall structure and used modern SystemVerilog constructs I like adopting. It also wrote a clear reset path for the counter. None of those were brand-new to me, but it was helpful to see them composed neatly in a minimal example. If I did this again, I would tighten my workflow in three ways:\n\nTreat the LLM as a code generator, not an authority. I’ll immediately run the output, then feed exact tool errors back to the model for focused corrections.\nAsk the LLM to “emit compile ready, tool-specific primitives” and include a checklist in the prompt. That nudge seems to reduce trivial mistakes.\nAdd a quick unit sanity check in the prompt: “Assume ~48 MHz HFOSC; show the counter width/math to reach ~2 Hz.” That forces the model to spell out the divide math, which is convenient to verify before synthesis."
+  },
+  {
+    "objectID": "e155 labs/lab 6/Lab_6.html#introduction",
+    "href": "e155 labs/lab 6/Lab_6.html#introduction",
+    "title": "The Internet of Things and Serial Peripheral Interface",
+    "section": "Introduction",
+    "text": "Introduction\nIn this lab, an Internet of Things (IoT) device was built using the STM32L432KC microcontroller, DS1722 temperature sensor, and ESP8266 WiFi module. The system measures ambient temperature and allows users to toggle an onboard LED through a web interface. The MCU communicates with the DS1722 via SPI and the ESP8266 via UART, using custom CMSIS-based drivers. This project demonstrated SPI communication, web-based data display, and hardware-software integration in an embedded system. By verifying signal timing with a logic analyzer and serving live temperature data over WiFi, I implemented a fully functional MCU-controlled IoT sensor node."
+  },
+  {
+    "objectID": "e155 labs/lab 6/Lab_6.html#design-and-testing-methodology",
+    "href": "e155 labs/lab 6/Lab_6.html#design-and-testing-methodology",
+    "title": "The Internet of Things and Serial Peripheral Interface",
+    "section": "Design and Testing Methodology",
+    "text": "Design and Testing Methodology\nThe system was designed using custom CMSIS-based libraries for SPI, GPIO, and UART communication. The SPI library initializes the STM32L432KC’s SPI1 peripheral by configuring its clock source, baud rate, polarity, and phase (CPOL = 0, CPHA = 1), ensuring compatibility with the DS1722 sensor’s active-high chip enable behavior. A dedicated temperature sensor library was built on top of the SPI driver providing functions to set resolution (8–12 bits) and read temperature data through two’s-complement conversion.\nThe DS1722 was wired in standard 4-wire SPI mode, with SPI_CE, SPI_SCK, SPI_MISO, and SPI_MOSI connections verified on a logic analyzer. The analyzer confirmed correct clock polarity, phase, and timing between transmitted and received bytes. To validate functionality, temperature readings were observed through UART printouts at varying conditions—room temperature, finger contact, and cooling with compressed air. These tests confirmed accurate and responsive behavior across the expected range."
+  },
+  {
+    "objectID": "e155 labs/lab 6/Lab_6.html#technical-documentation",
+    "href": "e155 labs/lab 6/Lab_6.html#technical-documentation",
+    "title": "The Internet of Things and Serial Peripheral Interface",
+    "section": "Technical Documentation",
+    "text": "Technical Documentation\nThe source code for the project can be found in the associated GitHub repository.\n\nSchematic\n\n\n\nFigure 1: Schematic of the physical circuit layout of the STM32L432 MCU Board with the DS1722 Temperature Sensor and the wi-fi module ESP 8266"
+  },
+  {
+    "objectID": "e155 labs/lab 6/Lab_6.html#verifiying-results",
+    "href": "e155 labs/lab 6/Lab_6.html#verifiying-results",
+    "title": "The Internet of Things and Serial Peripheral Interface",
+    "section": "Verifiying Results",
+    "text": "Verifiying Results\nTo verify correct SPI operation, the oscilloscope’s logic analyzer was used to monitor SPI_CE, SPI_SCK, SPI_MOSI, and SPI_MISO during temperature reads. The captured traces confirmed proper chip enable timing, correct clock polarity and phase, and expected byte sequencing for MSB and LSB transfers.\n\n\n\nFigure 2: Logic analyzer capture showing the SPI communication between the MCU and the DS1722 temperature sensor. The byte = 0xE0 indicates that the sensor was at 8-bit resolution.\n\n\n\n\n\nFigure 3: Logic analyzer capture showing the communication between the MCU and the DS1722 sensor at 12-bit resolution. config = 0xEE shows that the sensor was set to its highest resolution.\n\n\nThe DS1722’s output was further validated by simulating temperatures from –10 °C to 30 °C in 10 °C increments while testing all resolutions from 8-bit to 12-bit. As the resolution increased, fractional precision improved, and the measured values closely matched the expected two’s-complement temperature codes from the datasheet.\n\n\n\nFigure 4: Screenshots of the website page at different points in time to take the range of temperatures varying bit resolution."
+  },
+  {
+    "objectID": "e155 labs/lab 6/Lab_6.html#conclusion",
+    "href": "e155 labs/lab 6/Lab_6.html#conclusion",
+    "title": "The Internet of Things and Serial Peripheral Interface",
+    "section": "Conclusion",
+    "text": "Conclusion\nThis lab demonstrated successful SPI communication between the STM32L432KC microcontroller and the DS1722 digital temperature sensor. The sensor’s configuration and data transfer were verified using both serial output and logic analyzer traces, confirming correct clock timing, chip-enable behavior, and data alignment. Temperature readings were accurate across a range from –10 °C to 30 °C, with increasing precision observed from 8-bit to 12-bit resolution. Although UART communication with the ESP8266 proved unreliable, the MCU implementation met the key objectives of SPI functionality, temperature measurement, and data formatting for IoT applications. I spent 31 hours on this lab."
+  },
+  {
+    "objectID": "e155 labs/lab 6/Lab_6.html#ai-prototype-summary",
+    "href": "e155 labs/lab 6/Lab_6.html#ai-prototype-summary",
+    "title": "The Internet of Things and Serial Peripheral Interface",
+    "section": "AI Prototype Summary",
+    "text": "AI Prototype Summary\nI used Microsoft’s CoPilot to help design both my web interface for displaying temperature data and the firmware function that retrieves that data from the DS1722 sensor over SPI on the STM32L432KC. The LLM produced functional, readable code that matched my setup, and its explanations helped me verify my own reasoning—particularly in the areas of SPI timing, CMSIS register usage, and manual chip-select control. I would rate the quality of the output as high The generated HTML dashboard was immediately usable: it was responsive, clean, and well-commented.\nThe C code for the SPI transaction was also well-structured—it adhered to CMSIS conventions. However, the one area I had to modify was peripheral initialization: the function assumed SPI1 was already configured, so I had to add setup code for the GPIO and SPI mode. Overall the LLM did better than mediocre which is not unusual."
+  },
+  {
+    "objectID": "e155 labs/lab 2/Lab_2.html#introduction",
+    "href": "e155 labs/lab 2/Lab_2.html#introduction",
+    "title": "Multiplexing Seven Segment Display",
+    "section": "Introduction",
+    "text": "Introduction\nIn this lab, a time-multiplexed display system was implemented using an FPGA Upduino Board to drive a dual seven-segment display with a single decoder module. The system displayed two independent hexadecimal values sourced from two DIP switches and showed their sum on five LEDs. The design utilized transistor-based current control such as PNP transistors to safely drive the common anodes of the displays, ensuring proper brightness and avoiding bleeding or ghosting."
+  },
+  {
+    "objectID": "e155 labs/lab 2/Lab_2.html#design-and-testing-methodology",
+    "href": "e155 labs/lab 2/Lab_2.html#design-and-testing-methodology",
+    "title": "Multiplexing Seven Segment Display",
+    "section": "Design and Testing Methodology",
+    "text": "Design and Testing Methodology\nThe design included the iCE FPGA’s high-speed osciallator (HSOSC) divided down by a counter to slow down the multiplexing clock. The slow clock toggles between enabling the left or right digit by activating its common anode transistor whiel routing the correspodnign 4-bit input (s0 or s1) into the seven segment decoder. If too fast or slow then there would be flickering or the two numbers would bleed together so we had the switching at 240Hz. Humans can perceive refresh rate at 60Hz so we can speed up the frequency by a factor of 4 it won’t look like the two displays are switching.\nThe outputs of the DIP swithes provided the two hexadecimal values (s0 and s1). These values are added and the (max number is 30, 5-bit wide) was displayed on five external LEDs. The seven segment require additonal transistor circuitry to handle the higher current of the common anode pins, since a FPGA pin cannot source the needed current (~8mA)."
+  },
+  {
+    "objectID": "e155 labs/lab 2/Lab_2.html#fpga-design",
+    "href": "e155 labs/lab 2/Lab_2.html#fpga-design",
+    "title": "Multiplexing Seven Segment Display",
+    "section": "FPGA Design",
+    "text": "FPGA Design\nThe FPGA design for this lab was constructed in a modular and hierarchical method to meet teh multiplexed display instructions. The top level module lab2_bb coordinated the system while sevenseg provided the specific functionality.\n\n\n\n\n\n\n\n\nSignal Name\nType\nDetails\n\n\n\n\n[3:0] s0, s1\ninput\nDIP switches\n\n\n[4:0] led\noutput\nLEDs (the sum of s0 and s1)\n\n\n[6:0] seg\noutput\ncommon anode outputs on 7-segment display\n\n\ndisp0, disp1\ninternal\nthe “enable” on the mux taking in s0 and s1 as inputs\n\n\n\nThere is a top level module lab2_bb that instaniates the iCE40 oscillator and uses lab2_bbtb to verify simulation. The modules divides frequency using a 25-bit counter and have it “drive high” at the 19th bit (or when counter ==(2.^19)). This toggles a select signal select_mux to switch between the two hexadecimal inputs. Then it assigns the sum out (assign led = s0 + s1). Then control the digit enable signals disp0 and disp1 to ensure one display is high at a time. The sevenseg module is reused from Lab 1 and is a pure combinational decoder.\n\nTechnical Documentation\nThe source code for the project can be found in the associated GitHub repository.\n\n\nBlock Diagram\n\nFigure 1: Block diagram of the Verilog design.\nThe block diagram in Figure 2 demonstrates the overall architecture of the design. The top-level module lab2_bb includes one other module: the seven segment decoder while all the other outputs are internal.\n\n\nSchematic\n\nFigure 2: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.\n\nFigure 3: Shows the calculations of the resistors from Figure 3. A explanation below why each resistor was intentionally used:\n(1) PNP transistor: The transistor drives a lot of current and ensure that the FPGA pins were not sinking more than 8mA (our safety margin was 4mA). So thefore the base emitter saturation voltage (VBE(sat) = 0.7V). Taken into account then our resistor value is 650Ω.\n(2) Green LEDs: The forward voltage of a green LED is typically ~2V and we want current to be reasonably low at ~5mA and still be somewhat. Our resistor value is 260Ω.\n(3) 7-Segment: The PNP transistor also contains a collector emitter saturation voltage (VCE(sat) of 0.2V. The transistor drives a lot of current and ensure that the FPGA pins were not sinking more than 8mA (the safety margin used was 1mA). Then take into account the red LED forward voltage (~1.8V). Therefore the resistor value is 1.3kΩ."
+  },
+  {
+    "objectID": "e155 labs/lab 2/Lab_2.html#results-and-discussion",
+    "href": "e155 labs/lab 2/Lab_2.html#results-and-discussion",
+    "title": "Multiplexing Seven Segment Display",
+    "section": "Results and Discussion",
+    "text": "Results and Discussion\nThe QuestaSim confirmed the correct operation across all 256 input combinations and expected values. disp0 and disp1 toggled correctly in the end. This proved to the more diffciult protion of the lab was debugging and following the modular flow of how and what was affecting disp0 and disp1. The segment encodings matched the expected hexadecimal vlaues as well as the LED sum ([4:0]led) mathced the mathematical sum in all cases. The dual seven segment provided a clean display with no signs of ghosting. Some limitations and improvements could be adding a programable counter division could help with flexibility because the multiplexing frequency was fixed.\n\nTestbench Simulation\n Figure 4: Screenshot of a QuestaSim simulation that the sevenseg module works with inputs [3:0]s and outputs [6:0]seg so we can also affirm and validate to move on to the top module lab2_bb for test simulation.\n Figure 5a: Screenshot of a QuestaSim simulation demonstrating that all 256 tests succesfully work for the singel seven segment decoder module. We also see the select line: select_mux toggles and switches, therefore triggering disp0 and disp1 correctly.\n Figure 5b: Screenshot of QuestaSim waveforms that show a simulation that executed a run time of 0.5 seconds instead of 50000 ns to see the toggle on the select line: select_mux. This initiates disp0 and disp1 to switch from LOW to HIGH and vice versa."
+  },
+  {
+    "objectID": "e155 labs/lab 2/Lab_2.html#conclusion",
+    "href": "e155 labs/lab 2/Lab_2.html#conclusion",
+    "title": "Multiplexing Seven Segment Display",
+    "section": "Conclusion",
+    "text": "Conclusion\nIn this lab, I successfully designed and implemented a time-multiplexed dual seven-segment display system on the FPGA. By dividing down the high-speed oscillator, I generated a stable clock that alternately enabled the two display digits while sharing a single segment decoder. The system correctly displayed two independent hexadecimal values and their binary sum on external LEDs. Both simulation and hardware testing confirmed the correctness of the design.\nLab 2 emphasized the importance of time multiplexing as a resource-sharing strategy. I learned how to coordinate hardware timing so that multiple devices could be driven with limited FPGA resources. Debugging in QuestaSim revealed subtle issues, such as uninitialized signals and reset polarity mismatches, which highlighted the difference between simulation behavior and physical FPGA behavior. If given more time, I would experiment with brightness control through pulse-width modulation (PWM) to explore display dimming. I spent a total of 25 hours working on this lab."
+  },
+  {
+    "objectID": "e155 labs/lab 2/Lab_2.html#ai-prototype-summary",
+    "href": "e155 labs/lab 2/Lab_2.html#ai-prototype-summary",
+    "title": "Multiplexing Seven Segment Display",
+    "section": "AI Prototype Summary",
+    "text": "AI Prototype Summary\nThe LLM I used to generate SystemVerilog was Copilot. The quality of the LLM-generated SystemVerilog code was surprisingly high. The initial response included a clean and modular design with a separate decoder module and a top-level multiplexing module. The use of always_comb and always_ff blocks was appropriate and aligned with best practices for synthesizable code. The logic for toggling between inputs using a simple clock divider was intuitive and easy to follow. I’d rate the output high, mainly because it was correct, sound, and modular, and this is ideal for synthesis and simulation.\nOne interesting aspect was the use of logic instead of reg or wire, which is more idiomatic in SystemVerilog but less common in older Verilog codebases. The always_comb block was also a nice touch because it ensures combinational behavior without the risk of unintended latches. Additionally, the use of a separate decoder module made the design more reusable and testable, which is something I hadn’t considered in my initial approach. The design was synthesized successfully and behaved correctly in simulation.\nIf I were able to redo Lab 2 and implement an LLM in my HDL workflow, I would: - Start with a simulation-first mindset: Even if the code looks correct, simulating it early helps catch subtle issues like latch inference or multiple drivers. - Use the LLM for testbench generation: It’s great at generating stimulus and expected output logic, which speeds up verification."
   },
   {
     "objectID": "e155 labs/lab 4/Lab_4.html",
