@@ -1,94 +1,45 @@
 ---
-title: "Interrupts"
+title: "The Internet of Things and Serial Peripheral Interface"
 ---
+![](lab6_intro.png){width=1900}
 
 ## Introduction
-In this lab, the STM32L432KC microcontroller was used to measure the angular speed and direction of a DC motor by interfacing with a quadrature encoder through hardware interrupts. A quadature encoder is a rotary encoder that produces two-square wave outputs (usually Channel A and Channel B) which are 90° out of phase with each other. Two 5 V-tolerant pins (`PA6` and `PA8`) captured the encoder’s 90° out-of-phase signals, and the MCU was configured to trigger interrupts on both rising and falling edges to achieve full resolution. Each interrupt updated a counter that was used to calculate motor speed in revolutions per second (rev/s) and determine rotational direction, which were displayed on the Segger Studio terminal at a rate of 1Hz. A timer `TIM2` provided consistent 1 Hz updates for velocity calculation and display.
+In this lab, an Internet of Things (IoT) device was built using the STM32L432KC microcontroller, DS1722 temperature sensor, and ESP8266 WiFi module. The system measures ambient temperature and allows users to toggle an onboard LED through a web interface. The MCU communicates with the DS1722 via SPI and the ESP8266 via UART, using custom CMSIS-based drivers. This project demonstrated SPI communication, web-based data display, and hardware-software integration in an embedded system. By verifying signal timing with a logic analyzer and serving live temperature data over WiFi, I implemented a fully functional MCU-controlled IoT sensor node.
 
 ## Design and Testing Methodology
-To implement the design, `ENCODER_A` and `ENCODER_B` were connected to pins `PA6` and `PA8`, both configured as digital inputs with internal pull-downs to ensure clean signal transitions. The external interrupt (EXTI) peripheral was set to trigger on both rising and falling edges, enabling x4 edge detection for speed and direction measurement. 
+The system was designed using custom CMSIS-based libraries for SPI, GPIO, and UART communication. The SPI library initializes the STM32L432KC’s SPI1 peripheral by configuring its clock source, baud rate, polarity, and phase (`CPOL = 0`, `CPHA = 1`), ensuring compatibility with the DS1722 sensor's active-high chip enable behavior. A dedicated temperature sensor library was built on top of the SPI driver providing functions to set resolution (8–12 bits) and read temperature data through two’s-complement conversion.
 
-To validate system performance, two more GPIO pins were toggled—one in the main loop (polling) (`PA4`) and one inside the interrupt handler (`PA5`). This allowed the oscilloscope comparison of their response times. In the later section, I can confirm that interrupts captured every encoder edge while polling missed several transitions, especially at higher speeds.
-
-Overall, this lab demonstrated how interrupts provide accurate, real-time measurement of high-speed encoder signals. The setup for calculating speed and determining roational direction is shown below.
-
-### Calculating Speed
-In calculating the velocity we can convene to the [TS-25GA370 Datasheet](https://grabcad.com/library/geared-dc-motor-with-encoder-ts-25ga370h-1) and see that at 12V, the pulses per revolution (PPR) at 408 meaning each full turn of the motor shaft produces 408 complete sqaure-waves cycles on Channel A (and Channel B). 
-
-Each pulse two two channels and two edges per channel (rising and falling), so there are four detectable rising and falling edges per pulse:
-$$
-\text{edges per rev} = \text{PPR} \times\ 4 = 408 \times\ 4 = 1632
-$$
-
-The interrupt then detects on every edge of both A and B. Therefore, if the code counts all edges for one seconds, the raw counter give you edge per second. To convert into pulses per second (PPS) - divide by 4. Then to convert to revolutions per second (RPS), divide by PRR:
-$$
-\text{rev/s} = \frac{\text{edges per second}}{4\times\ 408}
-$$
-
-I can take the information and calculate the velocity of the motor at 12V rated at 150 RPM,
-$$
-\text{rev/s} = \frac{\text{RPM}}{60\ \text{sec}} = \frac{150 \frac{rev}{min}}{60\ \text{sec}} = 2.5\ \text{rev/s}
-$$
-
-Therefore, the calculated speed of the motor should about 2.5 rev/s at 12V.
-
-### Rotational Direction Logic
-As previously stated, Channel A and Channel B are 90° out of phase. So as the motor shaft rotates, A and B take turns rising and falling. A table is shown how we determine clockwise and counter-clockwise rotation:
-
-| Channel A | Channel B | Rotation (CW) |
-|:----:|:----:|:-------------:|
-| 0 | 0   | start    |
-| 1 | 0   | A rises first (CW)    |
-| 1 | 1   | B rises next (CWW)    |
-| 0 | 1   | A falls (CW)    |
-| 0 | 0   | B falls - back to start   |
-
-If motor spins clockwise A leads B and if counter-clockwise, B leads A.
+The DS1722 was wired in standard 4-wire SPI mode, with `SPI_CE`, `SPI_SCK`, `SPI_MISO`, and `SPI_MOSI` connections verified on a logic analyzer. The analyzer confirmed correct clock polarity, phase, and timing between transmitted and received bytes. To validate functionality, temperature readings were observed through UART printouts at varying conditions—room temperature, finger contact, and cooling with compressed air. These tests confirmed accurate and responsive behavior across the expected range.
 
 ## Technical Documentation
 The source code for the project can be found in the associated [GitHub repository](https://github.com/
-brbownds/e155-lab5).
+brbownds/e155-lab6).
 
 ### Schematic
-![Figure 1: Schematic of the physical circuit layout of the STM32L432 MCU Board and the 25GA-370 DC Motor](Lab5_sche.png){height=500}
+![Figure 1: Schematic of the physical circuit layout of the STM32L432 MCU Board with the DS1722 Temperature Sensor and the wi-fi module ESP 8266](Lab6_sche.png){height=500}
 
-### Flowchart
-![Figure 2: Flowchart of the interrupt-driven encoder system illustrating the code](Lab5_fc.png){width=700}
 
-## Verifying Correct Motor Speeds
-In verifying the DC motor speed we can take a oscilloscope trace of the measured the motor signal and check this against the calculated value from the motor's datasheet.  
+## Verifiying Results
+To verify correct SPI operation, the oscilloscope’s logic analyzer was used to monitor `SPI_CE`, `SPI_SCK`, `SPI_MOSI`, and `SPI_MISO` during temperature reads. The captured traces confirmed proper chip enable timing, correct clock polarity and phase, and expected byte sequencing for MSB and LSB transfers. 
 
-![Figure 3: Oscilloscope trace of the DC Motor at 12V](verifying_speed){width=500}
 
-As shown in Figure 3, the output period signal and can be used to back-calculate to find the measured DC motor speed:
-$$
-T_{pulse} = 864.0\ \mu s\quad \Rightarrow \quad \frac{\text{1 pulse}}{T_{pulse}} = 1157.40\ \frac{\text{pulses}}{\text{sec}}
-$$
-$$
-\frac{1157.41\ \frac{\text{pulses}}{\text{sec}}}{408 \frac{\text{pulses}}{\text{rev}}} = 2.837\ \text{rev/s}
-$$
+![Figure 2: Logic analyzer capture showing the SPI communication between the MCU and the DS1722 temperature sensor. The `byte = 0xE0` indicates that the sensor was at 8-bit resolution. ](lab6_oscope.png){width=700}
 
-From the calculated we can cross-reference with our actual values:
 
-![Figure 4: Speed values from DC motor displayed from Segger Studio terminal from main.c code](speed_12v.png)
+![Figure 3: Logic analyzer capture showing the communication between the MCU and the DS1722 sensor at 12-bit resolution. `config = 0xEE` shows that the sensor was set to its highest resolution.](lab6_oscope2.png){width=700}
 
-Therefore the speed error from the code and the measured oscilloscope is negilible. However the deviation speed from the datasheet and the measured are more significant possibly due to the motor speed itself fluctuating and not rotating at the same frequency.
 
-## Polling vs. Interrupts
-In this section, it is shown that interrupts outperform polling when sampling at high speeds. To begin, polling means the CPU perodically checks if an input has changed. This check rate depends on the main loop speed and its delays. For example, if an encoder pulses between checks, it'll miss it. Interrupts are event driven because the hardware triggers the MCU instantly when a change occurs. It pauses the CPU (main loop) to service the event. In simple terms interrupts detect every edge even at high frequency.
 
-![Figure 5: Oscilloscope traces of the differences in polling and interrupts and how it captures the encoder signal. Yellow = `ENCODER`, Blue = `INTERRUPT`, Pink = `POLLING`](poll_int_FINAL.png){width=600} 
+The DS1722’s output was further validated by simulating temperatures from –10 °C to 30 °C in 10 °C increments while testing all resolutions from 8-bit to 12-bit. As the resolution increased, fractional precision improved, and the measured values closely matched the expected two’s-complement temperature codes from the datasheet.
 
-Now this can be connected to the Nyquist-Shannon sampling theorem that says to accurately reconstruct a signal, you sample at twice its maximum frequency to also avoid aliasing and folding:
-$$
-f_{s} > 2f_{max}
-$$
-For polling, as shown in the figure, the sampling frequency equals how often the loop reads the input. We clearly we that the encoder (yellow) produces a ~2 kHz and the polling pulse (pink) runs at 110 Hz, this is clearly below the Nyquist rate and therefore aliasing the rising/falling edges. The interrupt (blue) triggers at the signal's edges themselves so Nyquist is never violated and there is no loss of data.
+![Figure 4: Screenshots of the website page at different points in time to take the range of temperatures varying bit resolution.](lab6_status.png){width=700}
+
+
 
 ## Conclusion
-In this lab, I successfully used the STM32L432KC MCU to measure a motor’s angular velocity and direction using a quadrature encoder with hardware interrupts. By triggering on both edges of the A and B signals, the system achieved full resolution and calculated speed in rev per second. Comparing oscilloscope readings with code output confirmed that the interrupt-based approach captured every encoder edge, while polling missed transitions due to undersampling. Overall, this lab demonstrated how interrupts enable precise, real-time signal processing and reliable velocity measurement for high-speed systems. I spent approximately **19 hours** completing this lab, including datasheet reading, code debugging, and oscilloscope testing.
-
-[Watch the demo!](https://youtube.com/shorts/d666eBnLSUc?si=ksXfy5iVamBkysoR)
+This lab demonstrated successful SPI communication between the STM32L432KC microcontroller and the DS1722 digital temperature sensor. The sensor’s configuration and data transfer were verified using both serial output and logic analyzer traces, confirming correct clock timing, chip-enable behavior, and data alignment. Temperature readings were accurate across a range from –10 °C to 30 °C, with increasing precision observed from 8-bit to 12-bit resolution. Although UART communication with the ESP8266 proved unreliable, the MCU implementation met the key objectives of SPI functionality, temperature measurement, and data formatting for IoT applications. I spent **31** hours on this lab.
 
 ## AI Prototype Summary
-Copilot helped me interface a quadrature encoder with the STM32L432KC and was a not-so-surprsing surprising experience. I asked for interrupt-based decoding, and Copilot immediately suggested using EXTI lines mapped to PA0 and PA1—pins that are straightforward to configure and well-supported by the STM32. The explanation was concise but thorough, walking through both the hardware setup and the software interrupt handlers. I appreciated how it didn’t just spit out code, but explained the reasoning behind the design choices, like why rising/falling edge detection is useful and how to interpret the encoder phase relationship.
+ I used Microsoft's CoPilot to help design both my web interface for displaying temperature data and the firmware function that retrieves that data from the DS1722 sensor over SPI on the STM32L432KC. The LLM produced functional, readable code that matched my setup, and its explanations helped me verify my own reasoning—particularly in the areas of SPI timing, CMSIS register usage, and manual chip-select control. I would rate the quality of the output as high The generated HTML dashboard was immediately usable: it was responsive, clean, and well-commented.
+ 
+ The C code for the SPI transaction was also well-structured—it adhered to CMSIS conventions. However, the one area I had to modify was peripheral initialization: the function assumed SPI1 was already configured, so I had to add setup code for the GPIO and SPI mode. Overall the LLM did better than mediocre which is not unusual.
