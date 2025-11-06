@@ -31,12 +31,33 @@ The sub-modules were:
 
 ![Figure 1: Finite State Machine Diagram (FSM) of the `keyscan.sv` module showcasing each input and output by powering columns and driving rows.](images/lab3_photo2.png){width=600}
 
+### Table 1: State transition table for the Keyscan FSM
+
+| **Row** | **Current State** | **Input** | **Next State** | **row / drive_en / debounce_en** |
+|:--------|:------------------|:--------------------|:----------------|:-------------------------------|
+| **Row 0** | R0_IDLE | `settle_done && exact1_button` | `R0_WAIT` | 0001  / 0    / 1    |
+|  |         R0_WAIT  | `debounced` = 1                | `DRIVE`   | 0001  / 1    / 0    |
+|  |         DRIVE    | `button_pressed` && `if_0`     | `R0_HOLD` | 0001  / 0    / 0    |
+|  |         R0_HOLD  | `!button_pressed`              | `R1_IDLE` | 0010  / 0    / 0    |
+| **Row 1** | R1_IDLE | `settle_done && exact1_button` | `R1_WAIT` | 0010  / 0    / 1    |
+|  |         R1_WAIT  | `debounced` = 1                | `DRIVE`   | 0010  / 1    / 0    |
+|  |         DRIVE    | `button_pressed` && `if_1`     | `R1_HOLD` | 0010  / 0    / 0    |
+|  |         R1_HOLD  | `!button_pressed`              | `R2_IDLE` | 0100  / 0    / 0    |
+| **Row 2** | R2_IDLE | `settle_done && exact1_button` | `R2_WAIT` | 0100  / 0    / 1    |
+|  |         R2_WAIT  | `debounced` = 1                | `DRIVE`   | 0100  / 1    / 0    |
+|  |         DRIVE    | `button_pressed` && `if_2`     | `R2_HOLD` | 0100  / 0    / 0    |
+|  |         R2_HOLD  | `!button_pressed`              | `R3_IDLE` | 1000  / 0    / 0    |
+| **Row 3** | R3_IDLE | `settle_done && exact1_button` | `R3_WAIT` | 1000  / 0    / 1    |
+|  |         R3_WAIT  | `debounced` = 1                | `DRIVE`   | 1000  / 1    / 0    |
+|  |         DRIVE    | `button_pressed` && `if_3`     | `R3_HOLD` | 1000  / 0    / 0    |
+|  |         R3_HOLD  | `!button_pressed`              | `R0_IDLE` | 0001  / 0    / 0    |
+
 
 ### Technical Documentation
 The source code for the project can be found in the associated [GitHub repository](https://github.com/brbownds/e155-lab3).
 
 ### Block Diagram
-![Figure 2: System-level block diagram illustrating data flow between the oscillator, synchronizer, FSM, decoder, and display modules.](images/lab3_photo1.png){width=600}
+![Figure 2: System-level block diagram illustrating data flow between the oscillator, synchronizer, FSM, decoder, and display modules.](images/lab3_block.png){width=600}
 
 ### Schematic
 ![Figure 3: Schematic of the physical circuit of the FPGA, LEDs, switches and the 7-segment display.](images/lab3_photo4.png){width=600}
