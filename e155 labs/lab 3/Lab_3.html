@@ -152,6 +152,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#design-and-testing-methodology" id="toc-design-and-testing-methodology" class="nav-link" data-scroll-target="#design-and-testing-methodology">Design and Testing Methodology</a></li>
   <li><a href="#fpga-design" id="toc-fpga-design" class="nav-link" data-scroll-target="#fpga-design">FPGA Design</a>
   <ul class="collapse">
+  <li><a href="#table-1-state-transition-table-for-the-keyscan-fsm" id="toc-table-1-state-transition-table-for-the-keyscan-fsm" class="nav-link" data-scroll-target="#table-1-state-transition-table-for-the-keyscan-fsm">Table 1: State transition table for the Keyscan FSM</a></li>
   <li><a href="#technical-documentation" id="toc-technical-documentation" class="nav-link" data-scroll-target="#technical-documentation">Technical Documentation</a></li>
   <li><a href="#block-diagram" id="toc-block-diagram" class="nav-link" data-scroll-target="#block-diagram">Block Diagram</a></li>
   <li><a href="#schematic" id="toc-schematic" class="nav-link" data-scroll-target="#schematic">Schematic</a></li>
@@ -210,6 +211,141 @@ ul.task-list li input[type="checkbox"] {
 <figcaption>Figure 1: Finite State Machine Diagram (FSM) of the <code>keyscan.sv</code> module showcasing each input and output by powering columns and driving rows.</figcaption>
 </figure>
 </div>
+<section id="table-1-state-transition-table-for-the-keyscan-fsm" class="level3">
+<h3 class="anchored" data-anchor-id="table-1-state-transition-table-for-the-keyscan-fsm">Table 1: State transition table for the Keyscan FSM</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 19%">
+<col style="width: 21%">
+<col style="width: 17%">
+<col style="width: 32%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;"><strong>Row</strong></th>
+<th style="text-align: left;"><strong>Current State</strong></th>
+<th style="text-align: left;"><strong>Input</strong></th>
+<th style="text-align: left;"><strong>Next State</strong></th>
+<th style="text-align: left;"><strong>row / drive_en / debounce_en</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>Row 0</strong></td>
+<td style="text-align: left;">R0_IDLE</td>
+<td style="text-align: left;"><code>settle_done &amp;&amp; exact1_button</code></td>
+<td style="text-align: left;"><code>R0_WAIT</code></td>
+<td style="text-align: left;">0001 / 0 / 1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">R0_WAIT</td>
+<td style="text-align: left;"><code>debounced</code> = 1</td>
+<td style="text-align: left;"><code>DRIVE</code></td>
+<td style="text-align: left;">0001 / 1 / 0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">DRIVE</td>
+<td style="text-align: left;"><code>button_pressed</code> &amp;&amp; <code>if_0</code></td>
+<td style="text-align: left;"><code>R0_HOLD</code></td>
+<td style="text-align: left;">0001 / 0 / 0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">R0_HOLD</td>
+<td style="text-align: left;"><code>!button_pressed</code></td>
+<td style="text-align: left;"><code>R1_IDLE</code></td>
+<td style="text-align: left;">0010 / 0 / 0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Row 1</strong></td>
+<td style="text-align: left;">R1_IDLE</td>
+<td style="text-align: left;"><code>settle_done &amp;&amp; exact1_button</code></td>
+<td style="text-align: left;"><code>R1_WAIT</code></td>
+<td style="text-align: left;">0010 / 0 / 1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">R1_WAIT</td>
+<td style="text-align: left;"><code>debounced</code> = 1</td>
+<td style="text-align: left;"><code>DRIVE</code></td>
+<td style="text-align: left;">0010 / 1 / 0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">DRIVE</td>
+<td style="text-align: left;"><code>button_pressed</code> &amp;&amp; <code>if_1</code></td>
+<td style="text-align: left;"><code>R1_HOLD</code></td>
+<td style="text-align: left;">0010 / 0 / 0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">R1_HOLD</td>
+<td style="text-align: left;"><code>!button_pressed</code></td>
+<td style="text-align: left;"><code>R2_IDLE</code></td>
+<td style="text-align: left;">0100 / 0 / 0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Row 2</strong></td>
+<td style="text-align: left;">R2_IDLE</td>
+<td style="text-align: left;"><code>settle_done &amp;&amp; exact1_button</code></td>
+<td style="text-align: left;"><code>R2_WAIT</code></td>
+<td style="text-align: left;">0100 / 0 / 1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">R2_WAIT</td>
+<td style="text-align: left;"><code>debounced</code> = 1</td>
+<td style="text-align: left;"><code>DRIVE</code></td>
+<td style="text-align: left;">0100 / 1 / 0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">DRIVE</td>
+<td style="text-align: left;"><code>button_pressed</code> &amp;&amp; <code>if_2</code></td>
+<td style="text-align: left;"><code>R2_HOLD</code></td>
+<td style="text-align: left;">0100 / 0 / 0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">R2_HOLD</td>
+<td style="text-align: left;"><code>!button_pressed</code></td>
+<td style="text-align: left;"><code>R3_IDLE</code></td>
+<td style="text-align: left;">1000 / 0 / 0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>Row 3</strong></td>
+<td style="text-align: left;">R3_IDLE</td>
+<td style="text-align: left;"><code>settle_done &amp;&amp; exact1_button</code></td>
+<td style="text-align: left;"><code>R3_WAIT</code></td>
+<td style="text-align: left;">1000 / 0 / 1</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">R3_WAIT</td>
+<td style="text-align: left;"><code>debounced</code> = 1</td>
+<td style="text-align: left;"><code>DRIVE</code></td>
+<td style="text-align: left;">1000 / 1 / 0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">DRIVE</td>
+<td style="text-align: left;"><code>button_pressed</code> &amp;&amp; <code>if_3</code></td>
+<td style="text-align: left;"><code>R3_HOLD</code></td>
+<td style="text-align: left;">1000 / 0 / 0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: left;">R3_HOLD</td>
+<td style="text-align: left;"><code>!button_pressed</code></td>
+<td style="text-align: left;"><code>R0_IDLE</code></td>
+<td style="text-align: left;">0001 / 0 / 0</td>
+</tr>
+</tbody>
+</table>
+</section>
 <section id="technical-documentation" class="level3">
 <h3 class="anchored" data-anchor-id="technical-documentation">Technical Documentation</h3>
 <p>The source code for the project can be found in the associated <a href="https://github.com/brbownds/e155-lab3">GitHub repository</a>.</p>
@@ -218,7 +354,7 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="block-diagram">Block Diagram</h3>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="images/lab3_photo1.png" class="img-fluid figure-img" width="600"></p>
+<p><img src="images/lab3_block.png" class="img-fluid figure-img" width="600"></p>
 <figcaption>Figure 2: System-level block diagram illustrating data flow between the oscillator, synchronizer, FSM, decoder, and display modules.</figcaption>
 </figure>
 </div>
